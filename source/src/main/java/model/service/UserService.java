@@ -33,7 +33,9 @@ public class UserService extends BaseService {
      * ユーザー登録
      */
     public void register(UserDto dto) throws Exception {
-        if (!Validator.isEmail(dto.getEmail()) || !Validator.isPasswordComplex(dto.getPasswordHash())) {
+        String plainPassword = dto.getPasswordHash();  // ← 平文を取り出す
+
+        if (!Validator.isEmail(dto.getEmail()) || !Validator.isPasswordComplex(plainPassword)) {
             throw new IllegalArgumentException("メール形式またはパスワード形式が不正です。");
         }
 
@@ -42,17 +44,21 @@ public class UserService extends BaseService {
             if (dao.findByEmail(dto.getEmail()) != null) {
                 throw new IllegalArgumentException("このメールアドレスは既に登録されています。");
             }
-            // Validator経由でハッシュ化（仮想メソッドとして想定）
-            dto.setPasswordHash(Validator.hashPassword(dto.getPasswordHash()));
+
+            // ここで初めてハッシュ化してセット
+            dto.setPasswordHash(Validator.hashPassword(plainPassword));
+
             dao.insert(dto);
         }
     }
+
+
 
     /**
      * メールアドレスの存在確認
      */
     public boolean exists(String email) throws Exception {
-        try (Connction conn = getConnection()) {
+        try (Connection conn = getConnection()) {
             return new UserDao(conn).findByEmail(email) != null;
         }
     }

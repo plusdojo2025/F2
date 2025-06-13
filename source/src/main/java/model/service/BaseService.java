@@ -13,13 +13,16 @@ public abstract class BaseService {
      * @return コネクションオブジェクト
      * @throws Exception JDBCエラー時
      */
-    protected Connection getConnection() throws Exception {
+	protected Connection getConnection() throws Exception {
+	    String url = "jdbc:mysql://localhost:3306/gijirokun"
+	               + "?useSSL=false"
+	               + "&characterEncoding=utf8"
+	               + "&serverTimezone=Asia/Tokyo";
 
-        String url = "jdbc:mysql://localhost:3306/gijirokun?useSSL=false&characterEncoding=UTF-8";
-        String user = "root";
-        String password = "password"; // 実際のMySQLのパスワード
+	    String user = "root";
+	    String password = "password"; // ← 実際のMySQLパスに合わせて
 
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(url, user, password);
-    }
+	    Class.forName("com.mysql.cj.jdbc.Driver");
+	    return DriverManager.getConnection(url, user, password);
+	}
 }
