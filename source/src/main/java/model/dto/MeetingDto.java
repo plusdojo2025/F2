@@ -16,10 +16,12 @@ public class MeetingDto implements Serializable {
     private boolean isDeleted;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    private String detailArea;
+    private String decisions;
 
     public MeetingDto() {}
 
-    public MeetingDto(int meetingId, String title, Date meetingDate, Time startTime, Time endTime, int createdBy, String participantsText, boolean isDeleted, Timestamp createdAt, Timestamp updatedAt) {
+    public MeetingDto(int meetingId, String title, Date meetingDate, Time startTime, Time endTime, int createdBy, String participantsText, boolean isDeleted, Timestamp createdAt, Timestamp updatedAt, String detailArea, String decisions) {
         this.meetingId = meetingId;
         this.title = title;
         this.meetingDate = meetingDate;
@@ -30,6 +32,8 @@ public class MeetingDto implements Serializable {
         this.isDeleted = isDeleted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.detailArea = detailArea;
+        this.decisions = decisions;
     }
 
     public int getMeetingId() { return meetingId; }
@@ -61,5 +65,10 @@ public class MeetingDto implements Serializable {
 
     public Timestamp getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
-}
 
+    public String getDetailArea() { return detailArea; }
+    public void setDetailArea(String detailArea) { this.detailArea = detailArea; }
+    
+    public String getDecisions() { return decisions; }
+    public void setDecisions(String decisions) { this.decisions = decisions; }
+}

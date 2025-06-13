@@ -1,0 +1,92 @@
+@charset "UTF-8";
+body {
+    font-family: 'Inter', 'Noto Sans JP', sans-serif;
+    background: #e0f7fa;
+    color: #222;
+    margin: 0;
+    padding: 0;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 2px 8px #0001;
+}
+.main-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #388e3c;
+}
+.nav a {
+    margin: 0 10px;
+    color: #388e3c;
+    text-decoration: none;
+    font-weight: bold;
+}
+.nav a:hover {
+    color: #2563eb;
+}
+.container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    padding: 32px 24px 24px 24px;
+}
+.meeting-detail-card {
+    padding: 24px;
+    background: #f8fffb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+}
+.meeting-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #00796b;
+    margin-bottom: 8px;
+}
+.meeting-meta {
+    color: #555;
+    margin-bottom: 8px;
+}
+.meeting-participants {
+    color: #388e3c;
+    margin-bottom: 12px;
+}
+.meeting-detail-area {
+    margin: 18px 0;
+    font-size: 1.05rem;
+    color: #222;
+    white-space: pre-wrap;
+}
+.meeting-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+.btn {
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.btn-edit { background: #4caf50; color: #fff; }
+.btn-delete { background: #ef5350; color: #fff; }
+.btn-cancel { background: #9e9e9e; color: #fff; }
+.btn:hover { opacity: 0.85; }
+.error-message {
+    background: #ffebee;
+    color: #c62828;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
+}

@@ -25,6 +25,11 @@ CREATE TABLE meetings (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
+--詳細のために
+ALTER TABLE meetings ADD COLUMN detail_area TEXT AFTER participants_text;
+--決定事項のカラムため
+ALTER TABLE meetings ADD COLUMN decisions TEXT AFTER detail_area;
+
 -- 議題テーブル
 CREATE TABLE agendas (
     agenda_id INT PRIMARY KEY AUTO_INCREMENT,
