@@ -45,3 +45,9 @@
 - データアクセスは DAOパターン
 - 共通処理（接続、バリデーションなど）は `/util/` に配置
 
+ 必要なJAR:
+     - jstl-1.2.jar
+     - standard-1.1.2.jar
+     - mysql-connector-java-8.0.26.jar
+     これらをWEB-INF/libに配置してください。
+
