@@ -21,7 +21,7 @@
 </header>
       <h2 class="text-4xl font-bold text-emerald-900 mb-10 text-center drop-shadow">🖨️ 議事録の出力</h2>
 
-  <!-- 出力画面 -->
+ <!-- 出力画面 -->
   <main>
   <form class="space-y-6" action="${pageContext.request.contextPath}/download/DownloadService" method="post">
     <!-- 横並び用の flex コンテナ -->
@@ -53,16 +53,17 @@
     <!-- 出力形式ラジオボタン -->
     <div class="form-group">
       <label class="block mb-1">出力形式</label>
-      <div class="flex gap-6">
-        <label class="radio-label">
-          <input type="radio" name="format" value="pdf" checked>
-          <span>PDF</span>
-        </label>
-        <label class="radio-label">
-          <input type="radio" name="format" value="text">
-          <span>Text</span>
-        </label>
-      </div>
+      <div class="radio-group">
+  <label class="radio-label">
+    <input type="radio" name="format" value="pdf" checked>
+    <span>PDF</span>
+  </label>
+  <label class="radio-label">
+    <input type="radio" name="format" value="text">
+    <span>Text</span>
+  </label>
+</div>
+
     </div>
 
     <!-- ボタン -->
