@@ -1,13 +1,11 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ユーザー設定</title>
-<link rel="stylesheet" href="/webapp/assets/css/Style.css">
-<link rel="stylesheet" href="/webapp/assets/css/download.css">
+<title>議事録の出力</title>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/download.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
 </head>
 <body>
   <!-- 共通ヘッダー -->
@@ -25,7 +23,7 @@
 
   <!-- 出力画面 -->
   <main>
-  <form class="space-y-6">
+  <form class="space-y-6" action="${pageContext.request.contextPath}/download/DownloadService" method="post">
     <!-- 横並び用の flex コンテナ -->
     <div class="form-group flex gap-4 items-end">
       <!-- 会議名検索 -->
@@ -38,7 +36,7 @@
       <!-- 日付検索 -->
       <div class="flex flex-col w-1/3">
         <label for="search-date" class="mb-1">日付検索</label>
-        <input type="text" id="search-date" name="searchDate" placeholder="年/月/日"
+        <input type="date" id="search-date" name="searchDate" placeholder="年/月/日"
           class="p-2 border rounded" />
       </div>
 
@@ -47,8 +45,7 @@
         <label for="meeting-select" class="mb-1">出力する会議を選択</label>
         <select id="meeting-select" name="meeting" class="p-2 border rounded">
           <option value="">-- 会議を選択してください --</option>
-          <option value="1">開発定例ミーティング（2025-06-01）</option>
-          <option value="2">設計レビュー（2025-06-03）</option>
+          <%-- ここに動的な会議リストを入れる --%>
         </select>
       </div>
     </div>
