@@ -1,37 +1,72 @@
 @charset "UTF-8";
 
-body {
-    font-family: 'Inter', 'Noto Sans JP', sans-serif;
-    background: #f0f9ff;
-    color: #222;
-    margin: 0;
-    padding: 0;
+/* ===== 共通背景・フォント ===== */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
+  background: url('/images/noise.png'), linear-gradient(135deg, #A2F4FF, #F5FEFF);
+  background-blend-mode: soft-light;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #065F46;
+  box-sizing: border-box;
 }
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem;
-    background: #fff;
-    box-shadow: 0 2px 8px #0001;
+/* ===== ヘッダー（上CSS準拠） ===== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background-color: #F8FDFC;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+  border-bottom: 1px solid #E0F2F1;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-
-.main-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #388e3c;
+header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #047857;
+  margin: 0;
+  line-height: 1.2;
 }
-
-.nav a {
-    margin: 0 10px;
-    color: #388e3c;
-    text-decoration: none;
-    font-weight: bold;
+nav {
+  display: flex;
+  gap: 2rem;
 }
-
-.nav a:hover {
-    color: #2563eb;
+nav a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #047857;
+}
+nav a:hover {
+  color: #10B981;
+}
+/* ===== 見出し（共通） ===== */
+h2 {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #065F46;
+  margin: 2.5rem 0 1.5rem;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
+}
+/* ===== メインフォームコンテナ（ユーザー設定基準） ===== */
+main {
+  max-width: 640px;
+  margin: 0 auto 4rem;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px);
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.1);
+  box-sizing: border-box;
 }
 
 .container {
@@ -177,3 +212,29 @@ body {
     background: #26a69a;
     color: #fff;
 }
+
+/* モーダル関連のスタイル */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+.modal.show { display: flex; }
+.modal-content {
+    background: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    width: 90%; max-width: 400px; text-align: center;
+}
+.modal-buttons {
+    display: flex; justify-content: center; gap: 12px; margin-top: 20px;
+}
+.btn-cancel { background: #ccc; color: #333; }
+.btn-confirm { background: #ef5350; color: #fff; }
+.hidden { display: none !important; }
+

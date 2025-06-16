@@ -8,6 +8,7 @@
     <meta charset="UTF-8">
     <title>会議詳細</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/meetingDetail.css">
+    <script src="${pageContext.request.contextPath}/js/meeting/meeting.js"></script>
 </head>
 <body>
     <!-- ヘッダー -->
@@ -44,7 +45,7 @@
                         <c:when test="${fn:length(meeting.detailArea) > 200}">
                             <span id="detail-short">${fn:substring(meeting.detailArea, 0, 200)}...</span>
                             <span id="detail-full" style="display:none;">${meeting.detailArea}</span>
-                            <button id="moreBtn" onclick="showFullDetail()">もっと見る</button>
+                            <button id="moreBtn">もっと見る</button>
                         </c:when>
                         <c:otherwise>
                             <span>${meeting.detailArea}</span>
