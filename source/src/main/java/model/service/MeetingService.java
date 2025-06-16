@@ -86,7 +86,7 @@ public class MeetingService extends BaseService {
 
         try (Connection conn = getConnection()) {
             AgendaDao dao = new AgendaDao(conn);
-            dao.insert(agenda);
+            dao.insertAgenda(agenda);
         }
     }
 
@@ -96,7 +96,7 @@ public class MeetingService extends BaseService {
     public void updateAgenda(AgendaDto agenda) throws Exception {
         try (Connection conn = getConnection()) {
             AgendaDao dao = new AgendaDao(conn);
-            dao.update(agenda);
+            dao.updateAgenda(agenda);
         }
     }
 
