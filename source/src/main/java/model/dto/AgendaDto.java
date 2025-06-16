@@ -76,8 +76,8 @@ public class AgendaDto implements Serializable {
 		return isDeleted;
 	}
 
-	public void setDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
+	public void setDeleted(boolean deleted) {
+		isDeleted = deleted;
 	}
 
 	public Timestamp getCreatedAt() {
