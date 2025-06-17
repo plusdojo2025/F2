@@ -11,7 +11,7 @@ import model.dto.MinutesManagementAndOutputDto;
 
 public class MinutesManagementOutputDao {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/gijirokun?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo";
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/f2?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Tokyo";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "password";
 

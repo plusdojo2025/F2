@@ -19,7 +19,7 @@ public class DownloadService {
      * DB接続取得（簡略版）
      */
     private Connection getConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/gijirokun_db?useSSL=false&serverTimezone=UTC";
+        String url = "jdbc:mysql://localhost:3306/f2_db?useSSL=false&serverTimezone=UTC";
         String user = "root";
         String password = "your_password";
         return DriverManager.getConnection(url, user, password);
