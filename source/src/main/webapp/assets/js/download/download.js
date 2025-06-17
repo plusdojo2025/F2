@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const meetingSelect = document.getElementById("meeting-select");
 
   async function fetchMeetings() {
+	console.log("fetchMeetings が呼ばれました"); 
     const name = searchNameInput.value;
     const date = searchDateInput.value;
 
@@ -12,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (date) params.append("date", date);
 
     try {
-      const response = await fetch(`/your-app-context/download/searchMeetings?${params.toString()}`);
+      const response = await fetch(`/F2/download/searchMeetings?${params.toString()}`);
       if (!response.ok) throw new Error("通信エラー");
 
       const meetings = await response.json();

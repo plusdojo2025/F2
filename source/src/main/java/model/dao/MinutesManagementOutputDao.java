@@ -25,7 +25,7 @@ public class MinutesManagementOutputDao {
         StringBuilder sql = new StringBuilder();
         sql.append("SELECT meeting_id, title, meeting_date ");
         sql.append("FROM meetings ");
-        sql.append("WHERE delete_flag = 0 ");
+        sql.append("WHERE is_deleted = 0 ");
 
         // 可変条件の構築
         List<Object> params = new ArrayList<>();
