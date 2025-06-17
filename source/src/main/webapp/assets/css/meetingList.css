@@ -160,34 +160,107 @@ main {
 
 .meeting-actions {
     display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: flex-start;
+    margin-top: 12px;
+    flex-wrap: nowrap;
+    align-items: center;
 }
 
-.btn {
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    text-decoration: none;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
+.meeting-actions .btn {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: 4px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.btn-search { background: #26a69a; color: #fff; }
-.btn-detail { background: #4caf50; color: #fff; }
-.btn-quick-detail { background: #8bc34a; color: #fff; }
-.btn-edit { background: #29b6f6; color: #fff; }
-.btn-delete { background: #ef5350; color: #fff; }
+.meeting-actions .btn i {
+    font-size: 14px;
+}
 
-.btn:hover {
-    opacity: 0.9;
-    transform: translateY(-1px);
+.btn-detail, .btn-quick-detail, .btn-edit-card, .btn-delete-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2.5px 6px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    min-width: 32px;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+.btn-detail {
+    background-color: #4a90e2;
+    color: white;
+}
+.btn-detail:hover {
+    background-color: #357abd;
+}
+
+.btn-quick-detail {
+    background-color: #5cb85c;
+    color: white;
+}
+.btn-quick-detail:hover {
+    background-color: #4cae4c;
+}
+
+.btn-edit-card {
+    background-color: #ffe0b2;
+    color: #b26a00;
+}
+.btn-edit-card:hover {
+    background-color: #ffd699;
+    color: #a65d00;
+}
+
+.btn-delete-card {
+    background-color: #ffb3b3;
+    color: #b71c1c;
+}
+.btn-delete-card:hover {
+    background-color: #ff8a80;
+    color: #b71c1c;
+}
+
+/* フォーム内のボタンのスタイルを調整 */
+.meeting-actions form {
+    margin: 0;
+    padding: 0;
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.meeting-actions form button {
+    margin: 0;
+    padding: 6px 12px;
+    border: none;
+    background-color: #d9534f;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.meeting-actions form button:hover {
+    background-color: #c9302c;
+}
+
+.meeting-actions form button i {
+    font-size: 14px;
 }
 
 .pagination {
@@ -213,28 +286,264 @@ main {
     color: #fff;
 }
 
-/* モーダル関連のスタイル */
+/* ===== モーダル ===== */
 .modal {
     display: none;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
     justify-content: center;
     align-items: center;
 }
-.modal.show { display: flex; }
-.modal-content {
-    background: #fff;
-    padding: 24px;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    width: 90%; max-width: 400px; text-align: center;
-}
-.modal-buttons {
-    display: flex; justify-content: center; gap: 12px; margin-top: 20px;
-}
-.btn-cancel { background: #ccc; color: #333; }
-.btn-confirm { background: #ef5350; color: #fff; }
-.hidden { display: none !important; }
 
+.modal.show {
+    display: flex;
+}
+
+.modal.hidden {
+    display: none !important;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-large {
+    max-width: 800px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.close-btn {
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    background: none;
+    color: #666;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.modal-body {
+    margin-top: 20px;
+}
+
+.meeting-meta {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.meeting-participants {
+    color: #388e3c;
+    margin-bottom: 12px;
+}
+
+.meeting-detail-area {
+    margin: 18px 0;
+    font-size: 1.05rem;
+    color: #222;
+    white-space: pre-wrap;
+}
+
+.meeting-decisions {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.meeting-decisions h4 {
+    color: #047857;
+    margin-bottom: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* 削除モーダルの確認ボタン */
+.btn-confirm {
+    background-color: #d9534f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-confirm:hover {
+    background-color: #c9302c;
+}
+
+/* ===== 詳細モーダルのカード*/
+.modal-content.modal-large {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 36px 32px 32px 32px;
+  max-width: 540px;
+  margin: 0 auto;
+  color: #065F46;
+  border: none;
+  position: relative;
+}
+
+.modal-header {
+  border-bottom: 1px solid #e0e0e0;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
+}
+
+.modal-header h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #217a5b;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.meeting-meta {
+  display: flex;
+  gap: 18px;
+  color: #388e3c;
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.meeting-participants {
+  color: #388e3c;
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 18px 0 12px 0;
+}
+
+.agenda-block {
+  margin-bottom: 10px;
+  font-size: 1.08rem;
+  color: #065F46;
+}
+
+.decision-block {
+  margin-top: 8px;
+  font-size: 1.08rem;
+  color: #065F46;
+}
+
+.decision-title {
+  font-weight: bold;
+  color: #217a5b;
+  margin-bottom: 4px;
+  font-size: 1.05rem;
+}
+
+.decision-content {
+  color: #217a5b;
+  font-size: 1.01rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  margin-top: 18px;
+}
+
+.btn-edit, .btn-delete, .btn-cancel {
+  min-width: 70px;
+  font-size: 1.01rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  border: none;
+  padding: 6px 14px;
+  font-weight: 600;
+  transition: background 0.2s, color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.btn-edit {
+  background: #ffe0b2;
+  color: #b26a00;
+}
+
+.btn-edit:hover {
+  background: #ffd699;
+  color: #a65d00;
+}
+
+.btn-delete {
+  background: #ffb3b3;
+  color: #b71c1c;
+}
+
+.btn-delete:hover {
+  background: #ff8a80;
+  color: #b71c1c;
+}
+
+.btn-cancel {
+  background: #f5f5f5;
+  color: #388e3c;
+  border: 1px solid #b2dfdb;
+}
+
+.btn-cancel:hover {
+  background: #e0f2f1;
+  color: #065F46;
+}
+
+.btn-search {
+    background-color: #4a90e2;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 7px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(74,144,226,0.08);
+    transition: background 0.2s, color 0.2s;
+    margin-left: 8px;
+}
+.btn-search:hover {
+    background-color: #357abd;
+    color: #fff;
+}

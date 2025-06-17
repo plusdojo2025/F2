@@ -58,13 +58,18 @@
                         </div>
                     </div>
                     <div class="meeting-actions">
-                        <a href="${pageContext.request.contextPath}/meeting/detail?id=${meeting.meetingId}" class="btn btn-detail">詳細</a>
-                        <a href="${pageContext.request.contextPath}/meeting/quickDetail?id=${meeting.meetingId}" class="btn btn-quick-detail">簡易詳細</a>
-                        <a href="${pageContext.request.contextPath}/meeting/edit?id=${meeting.meetingId}" class="btn btn-edit">編集</a>
-                        <form action="${pageContext.request.contextPath}/meeting/delete" method="post" style="display:inline;">
-                            <input type="hidden" name="id" value="${meeting.meetingId}">
-                            <button type="button" class="btn btn-delete" onclick="showModal('deleteModal', ${meeting.meetingId})">削除</button>
-                        </form>
+                        <a href="javascript:void(0)" onclick="MeetingList.showDetail('${meeting.meetingId}')" class="btn btn-detail">
+                            <i class="fas fa-info-circle"></i> 詳細
+                        </a>
+                        <a href="javascript:void(0)" onclick="MeetingList.showQuickDetail('${meeting.meetingId}')" class="btn btn-quick-detail">
+                            簡易詳細
+                        </a>
+                        <a href="${pageContext.request.contextPath}/meeting/edit?id=${meeting.meetingId}" class="btn btn-edit-card">
+                            <i class="fas fa-edit"></i> 編集
+                        </a>
+                        <a href="javascript:void(0)" onclick="showModal('deleteModal', '${meeting.meetingId}')" class="btn btn-delete-card">
+                            <i class="fas fa-trash"></i> 削除
+                        </a>
                     </div>
                 </div>
             </c:forEach>
@@ -81,6 +86,75 @@
                         <button type="submit" class="btn btn-confirm">削除する</button>
                     </div>
                 </form>
+            </div>
+        </div>
+        <!-- 詳細モーダル -->
+        <div id="detailModal" class="modal hidden">
+            <div class="modal-content modal-large">
+                <div class="modal-header">
+                    <h3 id="detailTitle"></h3>
+                    <button type="button" class="close-btn" onclick="closeModal('detailModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="meeting-meta">
+                        <div id="detailDate"></div>
+                        <div id="detailTime"></div>
+                    </div>
+                    <div class="meeting-participants">
+                        <i class="fas fa-users"></i>
+                        <span id="detailParticipants"></span>
+                    </div>
+                    <hr>
+                    <!-- 議題・発言ブロック -->
+                    <div id="detailAgendaBlock" class="agenda-block"></div>
+                    <!-- 決定事項ブロック -->
+                    <div id="detailDecisionBlock" class="decision-block">
+                        <div class="decision-title">決定事項</div>
+                        <div id="detailDecisions" class="decision-content"></div>
+                    </div>
+                    <div class="modal-actions">
+                        <a href="#" id="editLink" class="btn btn-edit"><i class="fas fa-edit"></i> 編集</a>
+                        <button type="button" class="btn btn-delete" onclick="showDeleteModal()"><i class="fas fa-trash"></i> 削除</button>
+                        <button type="button" class="btn btn-cancel" onclick="closeModal('detailModal')">閉じる</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 簡易詳細モーダル -->
+        <div id="quickDetailModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="quickDetailTitle"></h3>
+                    <button type="button" class="close-btn" onclick="closeModal('quickDetailModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="meeting-meta">
+                        <div id="quickDetailDate"></div>
+                        <div id="quickDetailTime"></div>
+                    </div>
+                    <div class="meeting-participants">
+                        <i class="fas fa-users"></i>
+                        <span id="quickDetailParticipants"></span>
+                    </div>
+                    <div class="meeting-decisions">
+                        <h4>議題・決定事項一覧</h4>
+                        <table class="agenda-decision-table" id="quickAgendaDecisionTable" style="table-layout:fixed;width:100%;">
+                            <thead>
+                                <tr>
+                                    <th style="width:40%;">議題</th>
+                                    <th style="width:60%;">決定事項</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- JSでDBデータを描画 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="meeting-actions">
+                        <button type="button" class="btn btn-cancel" onclick="closeModal('quickDetailModal')">閉じる</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="pagination">
