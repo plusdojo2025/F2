@@ -1,6 +1,6 @@
-CREATE DATABASE gijirokun;
+CREATE DATABASE f2;
 
-USE gijirokun;
+USE f2;
 -- ユーザーテーブル
 CREATE TABLE users (
     user_id INT PRIMARY KEY AUTO_INCREMENT,
