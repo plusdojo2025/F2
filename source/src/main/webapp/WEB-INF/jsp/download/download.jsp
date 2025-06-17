@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -6,6 +7,7 @@
 <title>議事録の出力</title>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/download.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+<script src="${pageContext.request.contextPath}/assets/js/download/download.js" defer></script>
 </head>
 <body>
   <!-- 共通ヘッダー -->

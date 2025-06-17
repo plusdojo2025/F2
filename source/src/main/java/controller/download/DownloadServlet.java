@@ -1,9 +1,7 @@
 package controller.download;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -12,106 +10,78 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import model.join.MeetingDetailsDto;
+import model.dto.MinutesManagementAndOutputDto;
 import model.service.DownloadService;
 
 /**
- * 議事録のダウンロードを担当するサーブレット。
- * ファイル形式は PDF または TEXT を指定可能。
+ * 会議検索を処理するサーブレット。
  */
-@WebServlet("/download")
+@WebServlet({"/download", "/download/searchMeetings", "/controller.download.DownloadServlet"})
 public class DownloadServlet extends HttpServlet {
+	
     private static final long serialVersionUID = 1L;
 
-    private final DownloadService downloadService = new DownloadService();
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        String meetingIdParam = request.getParameter("meetingId");
-        String format = request.getParameter("format"); // "pdf" or "text"
-
-        if (meetingIdParam == null || format == null) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "必要なパラメータが不足しています。");
-            return;
-        }
-
-        int meetingId;
-        try {
-            meetingId = Integer.parseInt(meetingIdParam);
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "meetingIdは数値で指定してください。");
-            return;
-        }
-
-        // 一時ファイルのパス設定（ファイル名例: minutes_123.pdf）
-        String tempDir = System.getProperty("java.io.tmpdir");
-        String extension = format.equalsIgnoreCase("pdf") ? ".pdf" : ".txt";
-        String fileName = "minutes_" + meetingId + extension;
-        File tempFile = new File(tempDir, fileName);
-
-        // 会議詳細の取得
-        MeetingDetailsDto meetingDetails = downloadService.generatePreviewData(meetingId);
-        if (meetingDetails == null) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "該当の会議が見つかりませんでした。");
-            return;
-        }
-
-        boolean success = false;
-        if ("pdf".equalsIgnoreCase(format)) {
-            success = downloadService.exportToPDF(meetingDetails, tempFile.getAbsolutePath());
-            response.setContentType("application/pdf");
-        } else if ("text".equalsIgnoreCase(format)) {
-            success = downloadService.exportToText(meetingDetails, tempFile.getAbsolutePath());
-            response.setContentType("text/plain");
-        } else {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "形式はpdfまたはtextのみ指定可能です。");
-            return;
-        }
-
-        if (!success || !tempFile.exists()) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "ファイルの生成に失敗しました。");
-            return;
-        }
-
-        // レスポンスヘッダ設定
-        response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
-        response.setContentLengthLong(tempFile.length());
-
-        // ファイル内容をレスポンスに書き出す
-        try (FileInputStream fis = new FileInputStream(tempFile);
-             OutputStream os = response.getOutputStream()) {
-
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = fis.read(buffer)) != -1) {
-                os.write(buffer, 0, bytesRead);
-            }
-        } finally {
-            // 一時ファイルを削除
-            tempFile.delete();
-        }
-    }
-    
+    /**
+     * GETリクエストを処理し、検索条件に応じた会議一覧をJSONで返却する。
+     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+    	
+    	String path = request.getServletPath();
+    	if ("/download".equals(path)) {
+            // JSPへフォワード（画面表示）
+            request.getRequestDispatcher("/WEB-INF/jsp/download/download.jsp").forward(request, response);
+            return;  // ここで処理終了
+        }
 
-        // 検索条件取得
-        String searchName = request.getParameter("searchName");
-        String searchDate = request.getParameter("searchDate");
 
-        request.setAttribute("searchName", searchName);
-        request.setAttribute("searchDate", searchDate);
+        // リクエストパラメータ取得（会議名と日付）
+        String searchName = request.getParameter("name");
+        String searchDate = request.getParameter("date");
 
-        // 検索結果取得
-        List<MeetingSummaryDto> meetingList = downloadService.searchMeetings(searchName, searchDate);
-        request.setAttribute("meetingList", meetingList);
+        // 会議検索サービスの呼び出し
+        DownloadService service = new DownloadService();
+        List<MinutesManagementAndOutputDto> meetings = service.searchMeetings(searchName, searchDate);
 
-        // JSP へフォワード
-        request.getRequestDispatcher("/WEB-INF/jsp/download.jsp").forward(request, response);
+        // レスポンス設定
+        response.setContentType("application/json; charset=UTF-8");
+        PrintWriter out = response.getWriter();
+
+        // JSON手動構築（Gson等は使わない）
+        StringBuilder json = new StringBuilder();
+        json.append("[");
+
+        if (meetings != null && !meetings.isEmpty()) {
+            for (int i = 0; i < meetings.size(); i++) {
+                MinutesManagementAndOutputDto dto = meetings.get(i);
+                json.append("{");
+                json.append("\"meetingId\":").append(dto.getmeeting_id()).append(",");
+                json.append("\"title\":\"").append(escapeJson(dto.getTitle())).append("\",");
+                json.append("\"meetingDate\":\"").append(dto.getMeetingDate()).append("\"");
+                json.append("}");
+                if (i < meetings.size() - 1) {
+                    json.append(",");
+                }
+            }
+        }
+
+        json.append("]");
+        out.print(json.toString());
+        out.flush();
     }
 
-
+    /**
+     * JSONの特殊文字をエスケープする補助メソッド
+     */
+    private String escapeJson(String input) {
+        if (input == null) return "";
+        return input.replace("\\", "\\\\")
+                    .replace("\"", "\\\"")
+                    .replace("\b", "\\b")
+                    .replace("\f", "\\f")
+                    .replace("\n", "\\n")
+                    .replace("\r", "\\r")
+                    .replace("\t", "\\t");
+    }
 }

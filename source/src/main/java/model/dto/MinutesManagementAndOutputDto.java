@@ -1,65 +1,28 @@
 package model.dto;
 
+import java.io.Serializable;
 import java.sql.Date;
-import java.sql.Timestamp;
 
-public class MinutesManagementAndOutputDto {
 
-    private int minuteId;
-    private int meetingId;
-    private String outputFormat;
-    private Timestamp createdAt;
+/**
+ * 議事録出力画面の検索結果用DTO。
+ * meetingsテーブルの一部項目をマッピング。
+ */
+public class MinutesManagementAndOutputDto implements Serializable {
 
-    // 追加フィールド
-    private String title;          // 会議名
-    private Date meetingDate;      // 会議開催日
+    private static final long serialVersionUID = 1L;
 
-    public MinutesManagementAndOutputDto() {
-        // デフォルトコンストラクタ
+    private int meeting_id;          // 会議ID
+    private String title;           // 会議名
+    private Date meetingDate;       // 会議開催日
+
+    // ゲッターとセッター
+    public int getmeeting_id() {
+        return meeting_id;
     }
 
-    public MinutesManagementAndOutputDto(int minuteId, int meetingId, String outputFormat, Timestamp createdAt,
-                                         String title, Date meetingDate) {
-        this.minuteId = minuteId;
-        this.meetingId = meetingId;
-        this.outputFormat = outputFormat;
-        this.createdAt = createdAt;
-        this.title = title;
-        this.meetingDate = meetingDate;
-    }
-
-    // getter/setter
-
-    public int getMinuteId() {
-        return minuteId;
-    }
-
-    public void setMinuteId(int minuteId) {
-        this.minuteId = minuteId;
-    }
-
-    public int getMeetingId() {
-        return meetingId;
-    }
-
-    public void setMeetingId(int meetingId) {
-        this.meetingId = meetingId;
-    }
-
-    public String getOutputFormat() {
-        return outputFormat;
-    }
-
-    public void setOutputFormat(String outputFormat) {
-        this.outputFormat = outputFormat;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void setmeeting_id(int meeting_id) {
+        this.meeting_id = meeting_id;
     }
 
     public String getTitle() {

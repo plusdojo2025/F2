@@ -1,54 +1,29 @@
 package model.service;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.List;
 
-import model.dao.MeetingDetailsDao;
-import model.join.MeetingDetailsDto;
-import util.download.PDFDownloader;
-import util.download.TextDownloader;
+import model.dao.MinutesManagementOutputDao;
+import model.dto.MinutesManagementAndOutputDto;
 
 /**
- * 議事録の出力関連機能を扱うサービスクラス。
- * PDF・テキスト出力やプレビュー生成に対応する。
+ * 議事録ダウンロード関連のサービスクラス。
  */
-public class DownloadService {
+public class DownloadService extends BaseService {
 
     /**
-     * DB接続取得（簡略版）
+     * 会議の検索処理
+     * @param searchName 会議名（部分一致）
+     * @param searchDate 会議日付（yyyy-MM-dd）
+     * @return 該当する会議リスト
      */
-    private Connection getConnection() throws SQLException {
-        String url = "jdbc:mysql://localhost:3306/f2_db?useSSL=false&serverTimezone=UTC";
-        String user = "root";
-        String password = "your_password";
-        return DriverManager.getConnection(url, user, password);
-    }
-
-    /**
-     * プレビュー用に議題一覧データを取得する。
-     */
-    public MeetingDetailsDto generatePreviewData(int meetingId) {
+    public List<MinutesManagementAndOutputDto> searchMeetings(String searchName, String searchDate) {
         try (Connection conn = getConnection()) {
-            MeetingDetailsDao dao = new MeetingDetailsDao(conn);
-            return dao.findByMeetingId(meetingId);
+            MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
+            return dao.searchMeetings(searchName, searchDate);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-    }
-
-    /**
-     * PDFとして議事録を出力する。
-     */
-    public boolean exportToPDF(MeetingDetailsDto meetingDetails, String filePath) {
-        return PDFDownloader.download(meetingDetails, filePath);
-    }
-
-    /**
-     * テキストとして議事録を出力する。
-     */
-    public boolean exportToText(MeetingDetailsDto meetingDetails, String filePath) {
-        return TextDownloader.download(meetingDetails, filePath);
     }
 }
