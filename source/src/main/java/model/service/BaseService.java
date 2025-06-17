@@ -14,7 +14,7 @@ public abstract class BaseService {
      * @throws Exception JDBCエラー時
      */
 	protected Connection getConnection() throws Exception {
-	    String url = "jdbc:mysql://localhost:3306/gijirokun"
+	    String url = "jdbc:mysql://localhost:3306/f2"
 	               + "?useSSL=false"
 	               + "&characterEncoding=utf8"
 	               + "&serverTimezone=Asia/Tokyo";
