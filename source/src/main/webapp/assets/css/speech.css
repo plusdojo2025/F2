@@ -59,11 +59,16 @@ main {
   max-width: 720px;
   margin: 0 auto;
   padding: 2rem;
+  padding-top: 1rem;
   background-color: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(14px);
   border-radius: 1.5rem;
   box-shadow: 0 6px 24px rgba(16, 185, 129, 0.1);
   box-sizing: border-box;
+}
+
+.glass {
+  margin-top: 1rem !important;
 }
 
 .page-title {
@@ -74,6 +79,7 @@ main {
   margin-bottom: 2rem;
 }
 
+/* ===== 入力フォーム ===== */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -102,6 +108,7 @@ input:focus, textarea:focus {
   box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
+/* ===== ボタン類 ===== */
 .buttons {
   display: flex;
   justify-content: center;
@@ -140,4 +147,50 @@ footer {
   font-size: 0.875rem;
   color: #047857;
   padding: 2rem 0;
+}
+
+/* ===== モーダル ===== */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.modal-content button {
+  padding: 0.5rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  background-color: #10b981;
+  color: white;
+  transition: opacity 0.3s ease;
+}
+.modal-content button:hover {
+  opacity: 0.85;
+}
+.hidden {
+  display: none !important;
 }

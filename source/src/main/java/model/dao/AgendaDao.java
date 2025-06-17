@@ -30,7 +30,7 @@ public class AgendaDao {
 		}
 	}
 	
-	 //更新
+	//更新
 	public void updateAgenda(AgendaDto agenda) throws SQLException {
 		String sql = "UPDATE agendas SET  title=?, order_number=?, speech_note=?, decision_note=? WHERE agenda_id = ? AND is_deleted = 0";
 		
