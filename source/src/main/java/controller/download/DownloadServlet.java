@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -117,11 +119,24 @@ public class DownloadServlet extends HttpServlet {
                 return;
             }
 
+            // 会議タイトル確認用ログ（開発時のみ）
+            System.out.println("会議タイトル: " + dto.getTitle());
+
             if ("text".equals(format)) {
                 // テキスト形式で出力
                 File textFile = service.generateMinutesTextFile(dto);
+
+                // ファイル名（会議名_日付.txt）を安全な形式に整形
+                String safeTitle = dto.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
+                String safeDate = new SimpleDateFormat("yyyy-MM-dd").format(dto.getMeetingDate());
+                String rawFileName = safeTitle + "_" + safeDate + ".txt";
+
+                // 日本語ファイル名をURLエンコード
+                String encodedFileName = URLEncoder.encode(rawFileName, "UTF-8").replaceAll("\\+", "%20");
+
+                // レスポンス設定
                 response.setContentType("text/plain; charset=UTF-8");
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + textFile.getName() + "\"");
+                response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
                 response.setContentLengthLong(textFile.length());
 
                 try (ServletOutputStream out = response.getOutputStream();
@@ -134,13 +149,17 @@ public class DownloadServlet extends HttpServlet {
                     }
                     out.flush();
                 }
-                // textFile.delete(); // 必要なら即削除
+
+                // 必要に応じて一時ファイル削除
+                // textFile.delete();
+
             } else if ("pdf".equals(format)) {
                 // TODO: PDF出力処理を実装（今は未対応の例外を出す）
                 response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "PDF出力は未実装です。");
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "無効な出力形式です。");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "出力処理に失敗しました。");
