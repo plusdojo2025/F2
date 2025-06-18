@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>新規登録 | ぎじろくん</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet" >
-<link rel = "stylesheet" href = "<%=request.getContextPath()%>/assets/css/style.css">  
+ <link rel = "stylesheet" href = "<%=request.getContextPath()%>/assets/css/register.css">
 </head>
 <body>
 
@@ -16,7 +16,7 @@
 	 <h1 class = "page-title">📘 新規登録</h1>
 	 
 <!-- 登録フォーム -->
-<form class = "form-block" action ="register" method ="POST">
+<form class = "form-block" action ="<%= request.getContextPath() %>/register" method ="POST">
 
 	<div class = "form-group">
 	 <label for = "username" >氏名</label>
@@ -38,14 +38,14 @@
     <div class = "buttons">
     	<button type = "submit" class = "btn-detail">✅アカウント作成</button>
     	
-    <script src = "register.js"></script>
+    <script src = "js/register.js"></script>
 	</div>
 	
 	
 </form>
 
 	<div class ="center-text">
-	  すでにアカウントをお持ちの方は<a href ="/login.jsp" class = "center-link">ログイン</a>
+	  すでにアカウントをお持ちの方は<a href ="/loginServlet" class = "center-link">ログイン</a>
 	</div>
 </div>
 </main>
