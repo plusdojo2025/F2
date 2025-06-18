@@ -21,151 +21,144 @@ import model.service.DownloadService;
 /**
  * 会議検索を処理するサーブレット。
  */
-@WebServlet({"/download", "/download/searchMeetings", "/controller.download.DownloadServlet"})
+@WebServlet({ "/download", "/download/searchMeetings", "/controller.download.DownloadServlet" })
 public class DownloadServlet extends HttpServlet {
-	
-    private static final long serialVersionUID = 1L;
 
-    /**
-     * GETリクエストを処理し、検索条件に応じた会議一覧をJSONで返却する。
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    	
-    	String path = request.getServletPath();
-    	if ("/download".equals(path)) {
-            // JSPへフォワード（画面表示）
-            request.getRequestDispatcher("/WEB-INF/jsp/download/download.jsp").forward(request, response);
-            return;  // ここで処理終了
-        }
+	private static final long serialVersionUID = 1L;
 
+	/**
+	 * GETリクエストを処理し、検索条件に応じた会議一覧をJSONで返却する。
+	 */
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        // リクエストパラメータ取得（会議名と日付）
-        String searchName = request.getParameter("name");
-        String searchDate = request.getParameter("date");
+		String path = request.getServletPath();
+		if ("/download".equals(path)) {
+			// JSPへフォワード（画面表示）
+			request.getRequestDispatcher("/WEB-INF/jsp/download/download.jsp").forward(request, response);
+			return; // ここで処理終了
+		}
 
-        // 会議検索サービスの呼び出し
-        DownloadService service = new DownloadService();
-        List<MinutesManagementAndOutputDto> meetings = service.searchMeetings(searchName, searchDate);
+		// リクエストパラメータ取得（会議名と日付）
+		String searchName = request.getParameter("name");
+		String searchDate = request.getParameter("date");
 
-        // レスポンス設定
-        response.setContentType("application/json; charset=UTF-8");
-        PrintWriter out = response.getWriter();
+		// 会議検索サービスの呼び出し
+		DownloadService service = new DownloadService();
+		List<MinutesManagementAndOutputDto> meetings = service.searchMeetings(searchName, searchDate);
 
-        // JSON手動構築（Gson等は使わない）
-        StringBuilder json = new StringBuilder();
-        json.append("[");
+		// レスポンス設定
+		response.setContentType("application/json; charset=UTF-8");
+		PrintWriter out = response.getWriter();
 
-        if (meetings != null && !meetings.isEmpty()) {
-            for (int i = 0; i < meetings.size(); i++) {
-                MinutesManagementAndOutputDto dto = meetings.get(i);
-                json.append("{");
-                json.append("\"meetingId\":").append(dto.getmeeting_id()).append(",");
-                json.append("\"title\":\"").append(escapeJson(dto.getTitle())).append("\",");
-                json.append("\"meetingDate\":\"").append(dto.getMeetingDate()).append("\"");
-                json.append("}");
-                if (i < meetings.size() - 1) {
-                    json.append(",");
-                }
-            }
-        }
+		// JSON手動構築（Gson等は使わない）
+		StringBuilder json = new StringBuilder();
+		json.append("[");
 
-        json.append("]");
-        out.print(json.toString());
-        out.flush();
-    }
+		if (meetings != null && !meetings.isEmpty()) {
+			for (int i = 0; i < meetings.size(); i++) {
+				MinutesManagementAndOutputDto dto = meetings.get(i);
+				json.append("{");
+				json.append("\"meetingId\":").append(dto.getmeeting_id()).append(",");
+				json.append("\"title\":\"").append(escapeJson(dto.getTitle())).append("\",");
+				json.append("\"meetingDate\":\"").append(dto.getMeetingDate()).append("\"");
+				json.append("}");
+				if (i < meetings.size() - 1) {
+					json.append(",");
+				}
+			}
+		}
 
-    /**
-     * JSONの特殊文字をエスケープする補助メソッド
-     */
-    private String escapeJson(String input) {
-        if (input == null) return "";
-        return input.replace("\\", "\\\\")
-                    .replace("\"", "\\\"")
-                    .replace("\b", "\\b")
-                    .replace("\f", "\\f")
-                    .replace("\n", "\\n")
-                    .replace("\r", "\\r")
-                    .replace("\t", "\\t");
-    }
-    
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+		json.append("]");
+		out.print(json.toString());
+		out.flush();
+	}
 
-        String meetingIdStr = request.getParameter("meeting");
-        String format = request.getParameter("format");
+	/**
+	 * JSONの特殊文字をエスケープする補助メソッド
+	 */
+	private String escapeJson(String input) {
+		if (input == null)
+			return "";
+		return input.replace("\\", "\\\\").replace("\"", "\\\"").replace("\b", "\\b").replace("\f", "\\f")
+				.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t");
+	}
 
-        if (meetingIdStr == null || meetingIdStr.isEmpty()) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "会議を選択してください。");
-            return;
-        }
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        int meetingId;
-        try {
-            meetingId = Integer.parseInt(meetingIdStr);
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "会議IDが不正です。");
-            return;
-        }
+		String meetingIdStr = request.getParameter("meeting");
+		String format = request.getParameter("format");
 
-        DownloadService service = new DownloadService();
+		if (meetingIdStr == null || meetingIdStr.isEmpty()) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "会議を選択してください。");
+			return;
+		}
 
-        try {
-            MinutesManagementAndOutputDto dto = service.getMeetingDetails(meetingId);
-            if (dto == null) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "会議が見つかりません。");
-                return;
-            }
+		int meetingId;
+		try {
+			meetingId = Integer.parseInt(meetingIdStr);
+		} catch (NumberFormatException e) {
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "会議IDが不正です。");
+			return;
+		}
 
-            // 会議タイトル確認用ログ（開発時のみ）
-            System.out.println("会議タイトル: " + dto.getTitle());
+		DownloadService service = new DownloadService();
 
-            if ("text".equals(format)) {
-                // テキスト形式で出力
-                File textFile = service.generateMinutesTextFile(dto);
+		try {
+			MinutesManagementAndOutputDto dto = service.getMeetingDetails(meetingId);
+			if (dto == null) {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "会議が見つかりません。");
+				return;
+			}
 
-                // ファイル名（会議名_日付.txt）を安全な形式に整形
-                String safeTitle = dto.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
-                String safeDate = new SimpleDateFormat("yyyy-MM-dd").format(dto.getMeetingDate());
-                String rawFileName = safeTitle + "_" + safeDate + ".txt";
+			// 会議タイトル確認用ログ（開発時のみ）
+			System.out.println("会議タイトル: " + dto.getTitle());
 
-                // 日本語ファイル名をURLエンコード
-                String encodedFileName = URLEncoder.encode(rawFileName, "UTF-8").replaceAll("\\+", "%20");
+			if ("text".equals(format)) {
+				// テキスト形式で出力
+				File textFile = service.generateMinutesTextFile(dto);
 
-                // レスポンス設定
-                response.setContentType("text/plain; charset=UTF-8");
-                response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
-                response.setContentLengthLong(textFile.length());
+				// ファイル名（会議名_日付.txt）を安全な形式に整形
+				String safeTitle = dto.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
+				String safeDate = new SimpleDateFormat("yyyy-MM-dd").format(dto.getMeetingDate());
+				String rawFileName = safeTitle + "_" + safeDate + ".txt";
 
-                try (ServletOutputStream out = response.getOutputStream();
-                     FileInputStream fis = new FileInputStream(textFile)) {
+				// 日本語ファイル名をURLエンコード
+				String encodedFileName = URLEncoder.encode(rawFileName, "UTF-8").replaceAll("\\+", "%20");
 
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = fis.read(buffer)) != -1) {
-                        out.write(buffer, 0, bytesRead);
-                    }
-                    out.flush();
-                }
+				// レスポンス設定
+				response.setContentType("text/plain; charset=UTF-8");
+				response.setHeader("Content-Disposition", "attachment; filename*=UTF-8''" + encodedFileName);
+				response.setContentLengthLong(textFile.length());
 
-                // 必要に応じて一時ファイル削除
-                // textFile.delete();
+				try (ServletOutputStream out = response.getOutputStream();
+						FileInputStream fis = new FileInputStream(textFile)) {
 
-            } else if ("pdf".equals(format)) {
-                // TODO: PDF出力処理を実装（今は未対応の例外を出す）
-                response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "PDF出力は未実装です。");
-            } else {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "無効な出力形式です。");
-            }
+					byte[] buffer = new byte[4096];
+					int bytesRead;
+					while ((bytesRead = fis.read(buffer)) != -1) {
+						out.write(buffer, 0, bytesRead);
+					}
+					out.flush();
+				}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "出力処理に失敗しました。");
-        }
-    }
+				// 必要に応じて一時ファイル削除
+				// textFile.delete();
 
+			} else if ("pdf".equals(format)) {
+				// TODO: PDF出力処理を実装（今は未対応の例外を出す）
+				response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "PDF出力は未実装です。");
+			} else {
+				response.sendError(HttpServletResponse.SC_BAD_REQUEST, "無効な出力形式です。");
+			}
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "出力処理に失敗しました。");
+		}
+	}
 
 }
