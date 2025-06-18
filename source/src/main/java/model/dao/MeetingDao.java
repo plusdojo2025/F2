@@ -120,4 +120,13 @@ public class MeetingDao {
         }
         return false;
     }
+
+    public Connection getConnection() {
+        try {
+            return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
