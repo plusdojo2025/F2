@@ -5,7 +5,8 @@
   padding: 0;
   min-height: 100vh;
   font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
-  background: url('/images/noise.png'), linear-gradient(135deg, #A2F4FF, #F5FEFF);
+  /* background: url('/images/noise.png'), linear-gradient(135deg, #A2F4FF, #F5FEFF); */
+  background: linear-gradient(135deg, #A2F4FF, #F5FEFF);
   background-blend-mode: soft-light;
   background-repeat: no-repeat;
   background-size: cover;
@@ -131,7 +132,12 @@
 .center-link:hover {
   color: #065f46;
 }
+<<<<<<< Updated upstream
 footer {
 	text-align:center;
 }
+=======
+
+
+>>>>>>> Stashed changes
 

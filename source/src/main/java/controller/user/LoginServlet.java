@@ -35,8 +35,14 @@ public class LoginServlet extends HttpServlet{
 		
 		if (user != null) {
 			request.getSession().setAttribute("loginUser",user);
-			response.sendRedirect("dashboard");
-			
+			// ダッシュボードJSPが存在すればリダイレクト、なければ404
+			String dashboardPath = "/WEB-INF/jsp/dashboard.jsp";
+			java.io.File dashboardFile = new java.io.File(getServletContext().getRealPath(dashboardPath));
+			if (dashboardFile.exists()) {
+				response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
+			} else {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND, "Dashboard not found");
+			}
 		} else {
 			request.setAttribute("errorMessage", "メールアドレスまたはパスワードが違います。");
 			request.getRequestDispatcher("/WEB-INF/jsp/user/login.jsp").forward(request,response);

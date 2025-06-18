@@ -166,5 +166,10 @@
     </div>
     <!-- JSはbodyの最後で読み込むのが確実 -->
     <script src="${pageContext.request.contextPath}/assets/js/meeting/meeting.js"></script>
+
+    <!-- フッター -->
+    <footer>
+        <p>&copy;2025 えんじにっち． All rights reserved.</p>
+    </footer>
 </body>
 </html>

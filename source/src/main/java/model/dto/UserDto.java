@@ -5,17 +5,16 @@ public class UserDto {
 	private int userId;
 	private String username;
 	private String email;
-	private String password;
+	private String passwordHash;
 	
 	public UserDto() {
 	}
 	
-	public UserDto(int userId, String username, String email, String password ) {
+	public UserDto(int userId, String username, String email, String passwordHash ) {
 		this.userId = userId;
 		this.username = username;
 		this.email = email;
-		this.password = password;
-		
+		this.passwordHash = passwordHash;
 	}
 	
 	
@@ -43,12 +42,11 @@ public class UserDto {
 		this.email = email;
 	}
 	
-	public String getPassword() {
-		return password;
+	public String getPasswordHash() {
+		return passwordHash;
 	}
 	
-	public void setPassword(String password) {
-		this.password = password;
-		
+	public void setPasswordHash(String passwordHash) {
+		this.passwordHash = passwordHash;
 	}
 }
