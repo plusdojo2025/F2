@@ -14,6 +14,13 @@
 		<div class = "glass">
 		<h1 class = "page-title">🔐 ログイン</h1>
 
+		<!-- エラーメッセージ表示 -->
+		<c:if test="${not empty errorMessage}">
+		  <div style="color:red; text-align:center; margin-bottom:10px;">
+		    ${errorMessage}
+		  </div>
+		</c:if>
+
 <!-- ログインフォーム -->
 <form class = "form-block" id = "login_form" method="POST" action="<%= request.getContextPath() %>/login">
 <div class = "form-group">	
