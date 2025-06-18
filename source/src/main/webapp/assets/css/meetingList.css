@@ -547,3 +547,32 @@ hr {
     background-color: #357abd;
     color: #fff;
 }
+
+/* 簡易詳細モーダルのテーブルを中央寄せ＆ガラス風に */
+.agenda-decision-table {
+    margin: 0 auto;
+    background: rgba(255,255,255,0.7);
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 90%;
+}
+
+.agenda-decision-table th, .agenda-decision-table td {
+    text-align: center;
+    padding: 16px 8px;
+    font-size: 1.1em;
+    color: #17695c;
+    border-bottom: 1px solid #e0e0e0;
+    background: transparent;
+}
+
+.agenda-decision-table th {
+    font-weight: bold;
+    background: rgba(28,169,124,0.12);
+}
+
+.agenda-decision-table tr:last-child td {
+    border-bottom: none;
+}
