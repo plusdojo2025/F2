@@ -5,9 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import model.dto.MinutesManagementAndOutputDto;
+import model.dto.MinutesManagementAndOutputDto.AgendaDto;
 
 /**
  * 会議情報取得用DAO（検索画面用）
@@ -58,5 +60,56 @@ public class MinutesManagementOutputDao {
         }
 
         return list;
+    }
+    
+    // ▼ 会議詳細データ取得（議事録出力用） ▼
+    public MinutesManagementAndOutputDto findMeetingDetailsById(int meetingId) throws SQLException {
+        MinutesManagementAndOutputDto dto = new MinutesManagementAndOutputDto();
+
+        // meetings テーブルから会議情報取得
+        String meetingSql = "SELECT title, meeting_date, start_time, end_time, participants_text FROM meetings WHERE meeting_id = ? AND is_deleted = 0";
+        try (PreparedStatement stmt = conn.prepareStatement(meetingSql)) {
+            stmt.setInt(1, meetingId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    dto.setmeeting_id(meetingId);
+                    dto.setTitle(rs.getString("title"));
+                    dto.setMeetingDate(rs.getDate("meeting_date"));
+                    dto.setStartTime(rs.getTime("start_time"));
+                    dto.setEndTime(rs.getTime("end_time"));
+
+                    String participantsText = rs.getString("participants_text");
+                    if (participantsText != null && !participantsText.isEmpty()) {
+                        String[] names = participantsText.split("\\s*,\\s*");
+                        dto.setParticipants(Arrays.asList(names));
+                    } else {
+                        dto.setParticipants(new ArrayList<>());
+                    }
+                } else {
+                    return null; // 該当なし
+                }
+            }
+        }
+
+        // agendas テーブルから議題取得
+        String agendaSql = "SELECT title, speech_note, decision_note FROM agendas WHERE meeting_id = ? AND is_deleted = 0 ORDER BY order_number ASC";
+        try (PreparedStatement stmt = conn.prepareStatement(agendaSql)) {
+            stmt.setInt(1, meetingId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                List<AgendaDto> agendas = new ArrayList<>();
+                while (rs.next()) {
+                    AgendaDto agenda = new AgendaDto();
+                    agenda.setTitle(rs.getString("title"));
+                    agenda.setSpeechNote(rs.getString("speech_note"));
+                    agenda.setDecisionNote(rs.getString("decision_note"));
+                    agendas.add(agenda);
+                }
+                dto.setAgendas(agendas);
+            }
+        }
+
+        return dto;
     }
 }

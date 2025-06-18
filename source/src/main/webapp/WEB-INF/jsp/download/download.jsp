@@ -25,7 +25,7 @@
 
  <!-- 出力画面 -->
   <main>
-  <form class="space-y-6" action="${pageContext.request.contextPath}/download/DownloadService" method="post">
+  <form class="space-y-6" action="${pageContext.request.contextPath}/download" method="post">
     <!-- 横並び用の flex コンテナ -->
     <div class="form-group flex gap-4 items-end">
       <!-- 会議名検索 -->

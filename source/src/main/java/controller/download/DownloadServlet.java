@@ -1,10 +1,13 @@
 package controller.download;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -84,4 +87,66 @@ public class DownloadServlet extends HttpServlet {
                     .replace("\r", "\\r")
                     .replace("\t", "\\t");
     }
+    
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        String meetingIdStr = request.getParameter("meeting");
+        String format = request.getParameter("format");
+
+        if (meetingIdStr == null || meetingIdStr.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "会議を選択してください。");
+            return;
+        }
+
+        int meetingId;
+        try {
+            meetingId = Integer.parseInt(meetingIdStr);
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "会議IDが不正です。");
+            return;
+        }
+
+        DownloadService service = new DownloadService();
+
+        try {
+            MinutesManagementAndOutputDto dto = service.getMeetingDetails(meetingId);
+            if (dto == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "会議が見つかりません。");
+                return;
+            }
+
+            if ("text".equals(format)) {
+                // テキスト形式で出力
+                File textFile = service.generateMinutesTextFile(dto);
+                response.setContentType("text/plain; charset=UTF-8");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + textFile.getName() + "\"");
+                response.setContentLengthLong(textFile.length());
+
+                try (ServletOutputStream out = response.getOutputStream();
+                     FileInputStream fis = new FileInputStream(textFile)) {
+
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = fis.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                    out.flush();
+                }
+                // textFile.delete(); // 必要なら即削除
+            } else if ("pdf".equals(format)) {
+                // TODO: PDF出力処理を実装（今は未対応の例外を出す）
+                response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "PDF出力は未実装です。");
+            } else {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "無効な出力形式です。");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "出力処理に失敗しました。");
+        }
+    }
+
+
+
 }
