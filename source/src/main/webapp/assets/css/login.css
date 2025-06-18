@@ -20,7 +20,7 @@
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  background: #f0fdfa; /* 薄い緑背景 */
+  /*background: #f0fdfa; /* 薄い緑背景 */
 }
 
 
@@ -131,3 +131,7 @@
 .center-link:hover {
   color: #065f46;
 }
+footer {
+	text-align:center;
+}
+
