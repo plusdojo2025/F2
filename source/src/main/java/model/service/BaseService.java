@@ -8,21 +8,20 @@ import java.sql.DriverManager;
  */
 public abstract class BaseService {
 
-    /**
-     * DBコネクションを取得する。
-     * @return コネクションオブジェクト
-     * @throws Exception JDBCエラー時
-     */
+	/**
+	 * DBコネクションを取得する。
+	 * 
+	 * @return コネクションオブジェクト
+	 * @throws Exception JDBCエラー時
+	 */
 	protected Connection getConnection() throws Exception {
-	    String url = "jdbc:mysql://localhost:3306/f2"
-	               + "?useSSL=false"
-	               + "&characterEncoding=utf8"
-	               + "&serverTimezone=Asia/Tokyo";
+		String url = "jdbc:mysql://localhost:3306/f2" + "?useSSL=false" + "&characterEncoding=utf8"
+				+ "&serverTimezone=Asia/Tokyo";
 
-	    String user = "root";
-	    String password = "password"; // ← 実際のMySQLパスに合わせて
+		String user = "root";
+		String password = "password"; // ← 実際のMySQLパスに合わせて
 
-	    Class.forName("com.mysql.cj.jdbc.Driver");
-	    return DriverManager.getConnection(url, user, password);
+		Class.forName("com.mysql.cj.jdbc.Driver");
+		return DriverManager.getConnection(url, user, password);
 	}
 }
