@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang ="ja">
 <head>
@@ -36,7 +37,7 @@
 </form>
  
  <div class = "center-text">
- アカウントをお持ちでない方は<a href = "<c:url value ='/RegisterServlet'/>" class = "center-link">新規登録</a>
+ アカウントをお持ちでない方は<a href = "<%= request.getContextPath() %>/register" class = "center-link">新規登録</a>
  </div>
 </div>
 </main>
