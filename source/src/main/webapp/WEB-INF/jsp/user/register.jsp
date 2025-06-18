@@ -35,6 +35,10 @@
 <div class = "form-group">
 	<label for = "password" >パスワード</label>
 	<input type = "password" id = "password" name = "password" required class ="form-input">
+</div>
+<div class = "form-group">
+	<label for = "password_confirm" >パスワード確認</label>
+	<input type = "password" id = "password_confirm" name = "password_confirm" required class ="form-input">
 </div>	
 <button type ="submit"  class = "btn-detail">登録
 </button>

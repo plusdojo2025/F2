@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			const username = form.username.value.trim();
 			const email = form.email.value.trim();
 			const password = form.password.value;
+			const passwordConfirm = form.password_confirm.value;
 			
 			// 入力値チェック
-			if (username === '' || email === '' || password === '') {
+			if (username === '' || email === '' || password === '' || passwordConfirm === '') {
 				let output = document.getElementById('output');
 				if (!output) {
 					output = document.createElement('div');
@@ -18,6 +19,22 @@ document.addEventListener('DOMContentLoaded', function() {
 					form.prepend(output);
 				}
 				output.textContent = 'すべての項目を入力してください。';
+				event.preventDefault();
+				return;
+			}
+			
+			// パスワード一致チェック
+			if (password !== passwordConfirm) {
+				let output = document.getElementById('output');
+				if (!output) {
+					output = document.createElement('div');
+					output.id = 'output';
+					output.style.color = 'red';
+					output.style.textAlign = 'center';
+					output.style.marginBottom = '10px';
+					form.prepend(output);
+				}
+				output.textContent = 'パスワードが一致しません。';
 				event.preventDefault();
 				return;
 			}
