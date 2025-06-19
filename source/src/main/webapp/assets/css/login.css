@@ -132,12 +132,16 @@
 .center-link:hover {
   color: #065f46;
 }
-<<<<<<< Updated upstream
+/*<<<<<<< Updated upstream*/
+
 footer {
-	text-align:center;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #4b5563;
+  margin-top: 2rem;
 }
-=======
+/*=======
 
 
->>>>>>> Stashed changes
+>>>>>>> Stashed changes*/
 
