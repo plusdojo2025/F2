@@ -60,24 +60,18 @@
 			</div>
 
 			<!-- 出力形式ラジオボタン -->
-			<div class="form-group">
-				<label class="block mb-1">出力形式</label>
+			<!-- ラジオ＋ボタンをまとめて囲む -->
+			<div class="download-actions">
 				<div class="radio-group">
-					<label class="radio-label"> <input type="radio"
-						name="format" value="pdf" checked> <span>PDF</span>
-					</label> <label class="radio-label"> <input type="radio"
-						name="format" value="text"> <span>Text</span>
-					</label>
+					<label><input type="radio" name="format" value="text"
+						checked> テキスト</label> <label><input type="radio"
+						name="format" value="pdf" disabled> PDF（未対応）</label>
 				</div>
 
+				<button type="submit" class="download-button">出力</button>
 			</div>
 
-			<!-- ボタン -->
-			<div class="flex justify-end">
-				<button type="submit"
-					class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold shadow-md transition">
-					出力する</button>
-			</div>
+
 		</form>
 	</main>
 
