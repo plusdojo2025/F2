@@ -64,7 +64,7 @@
 			onclick="togglePassword('password_confirm', this)">🙈</button>
 	</div>
 </div>	
-<button type ="submit"  class = "btn-detail">登録
+<button type ="submit"  class = "btn-detail">アカウント作成
 </button>
 </form>
  
