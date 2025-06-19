@@ -71,10 +71,25 @@ public class DownloadService extends BaseService {
 		try (Connection conn = getConnection()) {
 			MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
 			return dao.findMeetingDetailsById(meetingId);
-		} catch (Exception e) { // ← SQLException → Exception に修正
+		} catch (Exception e) { 
 			e.printStackTrace();
 			return null;
 		}
 	}
+	
+	/**
+	 * テキストファイルを生成し、DBに出力ログを記録する
+	 */
+	public File generateTextAndLog(MinutesManagementAndOutputDto dto) throws Exception {
+	    File file = generateMinutesTextFile(dto); // ファイル出力処理
+
+	    try (Connection conn = getConnection()) {
+	        MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
+	        dao.insertOutputLog(conn, dto); // ログをDBに記録
+	    }
+
+	    return file;
+	}
+
 
 }

@@ -118,8 +118,20 @@ public class DownloadServlet extends HttpServlet {
 			System.out.println("会議タイトル: " + dto.getTitle());
 
 			if ("text".equals(format)) {
-				// テキスト形式で出力
-				File textFile = service.generateMinutesTextFile(dto);
+				// 出力者ID（例：セッションに格納されたログインユーザー）から取得
+				// ※仮に "loginUserId" というセッション属性名でログインユーザーIDを保存していると想定
+				Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+				if (loginUserId == null) {
+				    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "ログイン情報が見つかりません。");
+				    return;
+				}
+
+				// DTOに出力者IDと形式をセット（ログ記録用）
+				dto.setCreatedBy(loginUserId);
+				dto.setOutputFormat("Text");
+
+				// 議事録ファイルを出力し、ログをDBに記録
+				File textFile = service.generateTextAndLog(dto);
 
 				// ファイル名（会議名_日付.txt）を安全な形式に整形
 				String safeTitle = dto.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");

@@ -209,14 +209,6 @@ public class MinutesManagementAndOutputDto implements Serializable {
         }
         return len;
     }
-
- // 右詰め（文字数ベース）
-    /*private String padRightVisualFixed(String text, int width) {
-        int visualLength = getVisualLength(text);
-        int padding = width - visualLength;
-        if (padding <= 0) return text;
-        return text + " ".repeat(padding);
-    }*/
     
  // ▼ 定数：列の見た目幅
     private static final int COLUMN_WIDTH = 45;
@@ -244,5 +236,27 @@ public class MinutesManagementAndOutputDto implements Serializable {
 	private String nullToEmpty(String input) {
 	    return input == null ? "" : input;
 	}
+	
+	
+	// ▼ ログ出力用 ▼
+	private int createdBy;
+	private String outputFormat;
+
+	public int getCreatedBy() {
+	    return createdBy;
+	}
+
+	public void setCreatedBy(int createdBy) {
+	    this.createdBy = createdBy;
+	}
+
+	public String getOutputFormat() {
+	    return outputFormat;
+	}
+
+	public void setOutputFormat(String outputFormat) {
+	    this.outputFormat = outputFormat;
+	}
+
 
 }
