@@ -29,15 +29,7 @@ public class UserService extends BaseService {
 		}
 	}
 
-<<<<<<< Updated upstream
-    /**
-     * ユーザー登録
-     */
-    public void register(UserDto dto) throws Exception {
-        if (!Validator.isEmail(dto.getEmail()) || !Validator.isPasswordComplex(dto.getPasswordHash())) {
-            throw new IllegalArgumentException("メール形式またはパスワード形式が不正です。");
-        }
-=======
+
 	/**
 	 * ユーザー登録
 	 */
@@ -47,35 +39,16 @@ public class UserService extends BaseService {
 		if (!Validator.isEmail(dto.getEmail()) || !Validator.isPasswordComplex(plainPassword)) {
 			throw new IllegalArgumentException("メール形式またはパスワード形式が不正です。");
 		}
->>>>>>> Stashed changes
-
 		try (Connection conn = getConnection()) {
 			UserDao dao = new UserDao(conn);
 			if (dao.findByEmail(dto.getEmail()) != null) {
 				throw new IllegalArgumentException("このメールアドレスは既に登録されています。");
 			}
-
-<<<<<<< Updated upstream
             // パスワードは既にRegisterServletでハッシュ化済み
             dao.insert(dto);
         }
     }
 
-    /**
-     * メールアドレスの存在確認
-     */
-    public boolean exists(String email) throws Exception {
-        try (Connection conn = getConnection()) {
-            return new UserDao(conn).findByEmail(email) != null;
-        }
-    }
-=======
-			// ここで初めてハッシュ化してセット
-			dto.setPasswordHash(Validator.hashPassword(plainPassword));
-
-			dao.insert(dto);
-		}
-	}
 
 	/**
 	 * メールアドレスの存在確認
@@ -130,6 +103,5 @@ public class UserService extends BaseService {
 			return false;
 		}
 	}
->>>>>>> Stashed changes
 
 }
