@@ -1,13 +1,12 @@
 @charset "UTF-8";
 
-/* ===== 共通背景・フォント ===== */
+/* ===== 全体背景・フォント設定 ===== */
 html, body {
 	margin: 0;
 	padding: 0;
 	min-height: 100vh;
 	font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
-	background: url('/images/noise.png'),
-		linear-gradient(135deg, #a2f4ff, #f5feff);
+	background: url('/images/noise.png'), linear-gradient(135deg, #a2f4ff, #f5feff);
 	background-blend-mode: soft-light;
 	background-repeat: no-repeat;
 	background-size: cover;
@@ -15,18 +14,13 @@ html, body {
 	box-sizing: border-box;
 }
 
-.logo {
-	font-weight: bold;
-	font-size: 1.1rem;
-	color: #047857;
-}
-/* ===== ヘッダー（統一デザイン） ===== */
+/* ===== ヘッダー ===== */
 header {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 1.25rem 2rem; /* ← 統一 */
-	background-color: #f8fdfc; /* ← 統一 */
+	padding: 1.25rem 2rem;
+	background-color: #f8fdfc;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
 	border-bottom: 1px solid #e0f2f1;
 	position: sticky;
@@ -41,8 +35,14 @@ header h1 {
 	font-size: 1.5rem;
 	font-weight: 800;
 	color: #047857;
-	margin: 0; /* ← これ重要！ */
-	line-height: 1.2; /* ← アイコンが高すぎる場合に調整 */
+	margin: 0;
+	line-height: 1.2;
+}
+
+.logo {
+	font-weight: bold;
+	font-size: 1.1rem;
+	color: #047857;
 }
 
 nav {
@@ -70,7 +70,7 @@ h2 {
 	text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.05);
 }
 
-/* ===== フォームコンテナ ===== */
+/* ===== メインフォームコンテナ ===== */
 main {
 	max-width: 640px;
 	margin: 0 auto 4rem;
@@ -82,7 +82,7 @@ main {
 	box-sizing: border-box;
 }
 
-/* ===== 入力グループ ===== */
+/* ===== 入力フィールド ===== */
 .account-form .form-group {
 	margin-bottom: 1.5rem;
 }
@@ -95,7 +95,9 @@ label {
 	font-size: 0.95rem;
 }
 
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"],
+input[type="email"],
+input[type="password"] {
 	width: 100%;
 	padding: 0.75rem 1rem;
 	font-size: 1rem;
@@ -113,7 +115,7 @@ input:focus {
 	box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
 }
 
-/* ===== パスワード切り替えボタン付き ===== */
+/* ===== パスワード表示切替 ===== */
 .input-with-icon {
 	position: relative;
 }
@@ -134,7 +136,7 @@ input:focus {
 	color: #047857;
 }
 
-/* ===== ボタン（中央揃え） ===== */
+/* ===== 送信ボタン ===== */
 .form-actions {
 	display: flex;
 	justify-content: center;
@@ -158,10 +160,18 @@ input:focus {
 	background-color: #059669;
 }
 
+/* ===== エラーメッセージ ===== */
 .error-message {
-	color: #e53935;
-	font-size: 0.85rem;
-	margin-top: 0.3rem;
+	display: none; /* 初期は非表示 */
+	background-color: #fef2f2;
+	color: #b91c1c;
+	border: 1px solid #fca5a5;
+	padding: 0.75rem 1rem;
+	border-radius: 1rem;
+	font-size: 0.95rem;
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+	box-shadow: 0 2px 8px rgba(185, 28, 28, 0.08);
 }
 
 /* ===== フッター ===== */
@@ -170,18 +180,4 @@ footer {
 	font-size: 0.875rem;
 	color: #047857;
 	padding: 2rem 0;
-}
-
-/* ===== エラーメッセージ ===== */
-.error-message {
-  display: none; /* 初期は非表示 */
-  background-color: #fef2f2;      /* 薄い赤背景 */
-  color: #b91c1c;                 /* 濃い赤テキスト */
-  border: 1px solid #fca5a5;      /* 赤のボーダー */
-  padding: 0.75rem 1rem;
-  border-radius: 1rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.08);
 }
