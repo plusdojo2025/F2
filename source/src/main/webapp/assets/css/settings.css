@@ -171,3 +171,17 @@ footer {
 	color: #047857;
 	padding: 2rem 0;
 }
+
+/* ===== エラーメッセージ ===== */
+.error-message {
+  display: none; /* 初期は非表示 */
+  background-color: #fef2f2;      /* 薄い赤背景 */
+  color: #b91c1c;                 /* 濃い赤テキスト */
+  border: 1px solid #fca5a5;      /* 赤のボーダー */
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.08);
+}

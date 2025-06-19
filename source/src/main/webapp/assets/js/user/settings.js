@@ -22,15 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 		}
 	});
-
-	// 3. パスワード表示切替ボタン（JSPのボタン連携）
-	const toggleButtons = document.querySelectorAll('.password-toggle');
-	toggleButtons.forEach(button => {
-		button.addEventListener('click', () => {
-			const inputId = button.previousElementSibling.id;
-			togglePassword(inputId, button);
-		});
-	});
 });
 
 // パスワードの表示・非表示切替関数（JSPのonclickで呼ばれている関数）

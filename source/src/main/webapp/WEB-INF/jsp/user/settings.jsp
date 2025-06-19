@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -12,7 +13,7 @@
 	href="<%=request.getContextPath()%>/assets/css/Style.css">
 <link rel="stylesheet"
 	href="<%=request.getContextPath()%>/assets/css/settings.css">
-<script src="<%=request.getContextPath()%>/assets/js/settings.js" defer></script>
+<script src="<%=request.getContextPath()%>/assets/js/user/settings.js" defer></script>
 </head>
 <body>
 
@@ -27,15 +28,14 @@
 				href="${pageContext.request.contextPath}/settings">アカウント設定</a>
 		</nav>
 	</header>
-
-
 	<h2>👤 ユーザー設定</h2>
 
 	<main>
 		<!-- エラーメッセージ表示用 -->
-		<div id="error-message" class="error-message"
-			style="display: none; color: red; margin-bottom: 1em;">
-			${error}</div>
+		<c:if test="${not empty error}">
+			<div id="error-message" class="error-message">${error}</div>
+		</c:if>
+
 
 		<form class="account-form"
 			action="${pageContext.request.contextPath}/settings" method="post">
