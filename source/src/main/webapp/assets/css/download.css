@@ -70,15 +70,13 @@ main h2 {
   font-weight: 700;
   margin-bottom: 1.5rem;
   color: #065F46;
-  text-align: center　!important;;
+  text-align: center !important;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
 }
 
 h2.text-center {
   text-align: center !important;
 }
-
-
 
 /* フォームグループ（余白統一） */
 .form-group {
@@ -91,7 +89,6 @@ label {
   color: #065F46;
   display: block;
   margin-bottom: 0.5rem;
-  /* text-align:center; */ /* 左寄せのほうが自然なのでコメントアウト */
 }
 
 /* 横並びflex用（searchフォームの横並び調整） */
@@ -111,13 +108,15 @@ label {
 /* セレクトボックス */
 select {
   width: 100%;
-  min-width: 300px; /* 適切な幅を指定 */
+  min-width: 300px;
+  min-height: 3rem;
   border-radius: 12px;
   border: 1.5px solid #10b981;
-  padding: 0.5rem 0.75rem;
+  padding: 0.75rem 1rem;
   font-size: 1rem;
-  outline-offset: 2px;
+  outline: none;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
 }
 
 select:focus {
@@ -125,34 +124,104 @@ select:focus {
   box-shadow: 0 0 8px #34d399;
 }
 
-/* ラジオボタン群を中央寄せ */
+/* ラベル＋検索枠全体のボックス */
+.search-box {
+  border: 0.8px solid #B0F8EA;
+  border-radius: 1rem;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  box-shadow: 0.4px 1px 3px rgba(176, 248, 234, 0.5);
+}
+
+/* 入力欄 */
+input[type="text"],
+input[type="date"] {
+  width: 100%;
+  min-height: 3rem;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid #10b981;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="date"]:focus {
+  border-color: #059669;
+  box-shadow: 0 0 8px #34d399;
+}
+
+/* 出力形式タイトル */
+.radio-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #065F46;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+/* ダウンロードボタン＆ラジオの配置 */
 .download-actions {
   display: flex;
   flex-direction: column;
-  align-items: center; /* 中央寄せ */
-  gap: 1rem; /* ラジオボタンとボタンの間隔 */
+  align-items: center;
+  gap: 1rem;
 }
 
-/* ラジオボタンの親グループを横並びで中央寄せ */
+/* ラジオボタン横並び */
 .radio-group {
   display: flex;
-  gap: 1.5rem;
-  justify-content: center; /* 中央寄せ */
+  gap: 2rem;
+  text-align: center;
+  align-items: center;
 }
 
-/* ラジオボタンのラベル */
-.radio-label {
+/* ラベル（テキスト） */
+.radio-group label {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-weight: 500;
+  font-weight: 700;
   color: #065F46;
+  cursor: pointer;
+  position: relative;
+  top: 4px;
 }
 
-/* ラジオボタンの色 */
-input[type="radio"] {
-  color: #10b981;
+/* ラジオボタン（デフォルト表示・選択可能） */
+.radio-group input[type="radio"] {
+ appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid #10b981;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  cursor: pointer;
+  position: relative;
+  background-color: white;
+}
+
+/* ラジオ選択状態 */
+input[type="radio"]:checked {
   accent-color: #10b981;
+}
+
+.radio-group input[type="radio"]:checked::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.6rem;  /* 塗り部分を小さくして余白を作る */
+  height: 0.6rem;
+  background-color: #10b981;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
 }
 
 /* 送信ボタン */
@@ -163,11 +232,16 @@ button[type="submit"] {
   padding: 0.5rem 1.5rem;
   border: none;
   border-radius: 9999px;
-  box-shadow: 0 6px;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.5);
 }
 
-/* フッター中央寄せ */
+button[type="submit"]:hover {
+  background-color: #059669;
+  box-shadow: 0 6px 16px rgba(16, 185, 129, 0.6);
+}
+
+/* ===== フッター ===== */
 footer {
   text-align: center;
   padding: 1rem;

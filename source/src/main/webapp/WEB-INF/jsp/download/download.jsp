@@ -38,21 +38,21 @@
 			<!-- 横並び用の flex コンテナ -->
 			<div class="form-group flex gap-4 items-end">
 				<!-- 会議名検索 -->
-				<div class="flex flex-col w-1/3">
+				<div class="search-box">
 					<label for="search-name" class="mb-1">会議名検索</label> <input
 						type="text" id="search-name" name="searchName"
 						placeholder="会議名を入力" class="p-2 border rounded" />
 				</div>
 
 				<!-- 日付検索 -->
-				<div class="flex flex-col w-1/3">
+				<div class="search-box">
 					<label for="search-date" class="mb-1">日付検索</label> <input
-						type="date" id="search-date" name="searchDate" placeholder="年/月/日"
+						type="date" id="search-date" name="searchDate" placeholder="yyyy/mm/dd"
 						class="p-2 border rounded" />
 				</div>
 
 				<!-- 会議選択 -->
-				<div class="flex flex-col w-1/3">
+				<div class="search-box">
 					<label for="meeting-select" class="mb-1">出力する会議を選択</label> <select
 						id="meeting-select" name="meeting" class="p-2 border rounded">
 						<option value="">-- 会議を選択してください --</option>
@@ -64,13 +64,15 @@
 			<!-- 出力形式ラジオボタン -->
 			<!-- ラジオ＋ボタンをまとめて囲む -->
 			<div class="download-actions">
+			<p class="radio-title">出力形式</p>
 				<div class="radio-group">
-					<label><input type="radio" name="format" value="text"
-						checked> テキスト</label> <label><input type="radio"
-						name="format" value="pdf" disabled> PDF（未対応）</label>
+					<label>
+					<input type="radio"name="format" value="pdf"> PDF</label>
+					<label>
+					<input type="radio" name="format" value="text"checked> TEXT</label> 
 				</div>
 
-				<button type="submit" class="download-button">出力</button>
+				<button type="submit" class="download-button">出力する</button>
 			</div>
 
 
