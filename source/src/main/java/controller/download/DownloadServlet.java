@@ -116,7 +116,13 @@ public class DownloadServlet extends HttpServlet {
 
 			// 会議タイトル確認用ログ（開発時のみ）
 			System.out.println("会議タイトル: " + dto.getTitle());
-
+			// 仮ログインユーザーをセッションにセット（ログインせずに動作確認したい場合）
+	        // すでにログインユーザーがあれば上書きしない
+	        if (request.getSession().getAttribute("loginUserId") == null) {
+	            request.getSession().setAttribute("loginUserId", 1); // 仮ユーザーIDを1に設定
+	            // 必要なら名前等のユーザーデータもセットする箇所を拡張してください
+	        }
+	        
 			if ("text".equals(format)) {
 				// 出力者ID（例：セッションに格納されたログインユーザー）から取得
 				// ※仮に "loginUserId" というセッション属性名でログインユーザーIDを保存していると想定

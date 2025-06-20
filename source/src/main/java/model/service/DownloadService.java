@@ -92,4 +92,26 @@ public class DownloadService extends BaseService {
 	}
 
 
+	/**
+	 * プレビュー表示用の議事録テキストを取得
+	 * @param meetingId 対象会議ID
+	 * @param format 出力形式（"text" / "pdf"）
+	 * @return 議事録テキスト（今はtextのみ対応）
+	 */
+	public String getMinutesPreviewText(int meetingId, String format) throws SQLException, IOException {
+		MinutesManagementAndOutputDto dto = getMeetingDetails(meetingId);
+		if (dto == null) {
+			return null;
+		}
+
+		if ("text".equals(format)) {
+			return dto.generateMinutesText(); // DTO内で定義されたテキスト生成メソッドを活用
+		} else if ("pdf".equals(format)) {
+			// 将来的にPDFの場合のプレビュー取得処理を実装（例：Base64に変換など）
+			throw new UnsupportedOperationException("PDFプレビューは未実装です。");
+		} else {
+			throw new IllegalArgumentException("不正な出力形式です。");
+		}
+	}
+
 }

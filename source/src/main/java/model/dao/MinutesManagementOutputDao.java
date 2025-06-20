@@ -115,7 +115,7 @@ public class MinutesManagementOutputDao {
 	
 	// ▼ ログ書き込み用（MinutesManagementOutputテーブルへの書き込み） ▼
 	public void insertOutputLog(Connection conn, MinutesManagementAndOutputDto dto) throws SQLException {
-	    String sql = "INSERT INTO MinutesManagementOutput (meeting_id, created_by, output_format, is_deleted) VALUES (?, ?, ?, 0)";
+	    String sql = "INSERT INTO MinutesManagementOutput (meeting_id, created_by, output_format) VALUES (?, ?, ?)";
 	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
 	        ps.setInt(1, dto.getmeeting_id());
 	        ps.setInt(2, dto.getCreatedBy());
