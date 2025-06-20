@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import model.dto.MinutesManagementAndOutputDto;
 import model.service.DownloadService;
 
 @WebServlet("/download/preview")
@@ -31,14 +32,17 @@ public class DownloadPreviewServlet extends HttpServlet {
 			int meetingId = Integer.parseInt(meetingIdStr);
 
 			DownloadService service = new DownloadService();
-			String previewText = service.getMinutesPreviewText(meetingId, format);
+			 // dtoとテキストを取得
+	        MinutesManagementAndOutputDto dto = service.getMeetingDetails(meetingId);
+	        String previewText = service.getMinutesPreviewText(meetingId, format);
 
-			if (previewText == null) {
+			if (dto == null || previewText == null) {
 				response.sendError(HttpServletResponse.SC_NOT_FOUND, "会議情報が見つかりません。");
 				return;
 			}
 
 			// JSPに渡す
+			request.setAttribute("dto", dto);
 			request.setAttribute("meetingId", meetingId);
 			request.setAttribute("format", format);
 			request.setAttribute("previewText", previewText);

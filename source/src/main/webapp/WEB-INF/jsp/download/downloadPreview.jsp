@@ -32,6 +32,7 @@
 		</div>
 
 		<!-- 出力ボタンフォーム -->
+		<!--<p>DEBUG: 会議ID = ${dto.meeting_id}</p>  デバッグ用-->
 		<div class="download-actions">
 			<form action="${pageContext.request.contextPath}/download"
 				method="post">
