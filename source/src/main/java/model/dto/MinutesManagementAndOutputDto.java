@@ -131,7 +131,7 @@ public class MinutesManagementAndOutputDto implements Serializable {
 		    (participants != null && !participants.isEmpty() ? String.join("、", participants) : "（未入力）");
 		sb.append(centerAlignAscii(participantsLine, TOTAL_WIDTH)).append("\n");
 		// 区切り線
-		sb.append("-------------------------------------------------------------------------------------------------------------------\n");
+		sb.append("--------------------------------------------------------------------------------------------\n");
 
 		 if (agendas == null || agendas.isEmpty()) {
 		        sb.append("（議題がありません）\n");
@@ -187,7 +187,7 @@ public class MinutesManagementAndOutputDto implements Serializable {
 		            sb.append(padRightVisual(leftLine, COLUMN_WIDTH)).append("｜ ")
 		              .append(padRightVisual(rightLine, COLUMN_WIDTH)).append("\n");
 		        }
-		        sb.append("-------------------------------------------------------------------------------------------------------------------\n");
+		        sb.append("--------------------------------------------------------------------------------------------\n");
 		    }
 
 		    return sb.toString();

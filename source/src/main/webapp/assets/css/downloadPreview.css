@@ -1,0 +1,215 @@
+@charset "UTF-8";
+/* ===== ベース共通設定 ===== */
+html, body {
+  margin: 0; padding: 0;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
+  background:
+    url('/images/noise.png'),
+    linear-gradient(135deg, #A2F4FF, #F5FEFF);
+  background-blend-mode: soft-light;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #065F46;
+  box-sizing: border-box;
+}
+
+/* ===== ヘッダー ===== */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(12px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+  border-bottom: 1px solid #E0F2F1;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+header h1 {
+  font-weight: 700;
+  color: #047857;
+  font-size: 1.25rem;
+  margin: 0;
+  line-height: 1.2;
+}
+
+nav {
+  display: flex;
+  gap: 2rem;
+}
+
+nav a {
+  font-weight: 600;
+  text-decoration: none;
+  color: #047857;
+  transition: color 0.25s ease;
+}
+
+nav a:hover {
+  color: #10B981;
+}
+
+/* ===== メインコンテンツ ===== */
+main {
+  max-width: 800px;
+  margin: 3rem auto 4rem;
+  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(14px);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.1);
+  box-sizing: border-box;
+}
+
+main h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #065F46;
+  text-align: center;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+}
+
+/* フォームグループ（余白統一） */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+/* ラベル（左寄せ統一） */
+label {
+  font-weight: 600;
+  color: #065F46;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.preview-title {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  margin: 1rem 0;
+}
+
+.minutes-preview {
+  text-align: center; /* 全体を中央寄せ */
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.minutes-preview pre {
+  display: inline-block; /* 幅を必要以上に広げない */
+  text-align: left;      /* テキストは左揃えで読みやすく */
+  white-space: pre-wrap;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 1.5rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.download-actions {
+  display: flex;
+  flex-direction: row; /* 横並び */
+  justify-content: center; /* 中央寄せ */
+  align-items: center;
+  gap: 2rem; /* ボタン間スペース */
+  margin-top: 2rem;
+}
+
+.download-actions form {
+  margin: 0;
+}
+
+.download-actions button {
+  background-color: #10b981;
+  color: white;
+  font-weight: 700;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+  transition: background-color 0.3s ease;
+}
+
+.download-actions button:hover {
+  background-color: #059669;
+}
+
+/* 横並びflex用（searchフォームの横並び調整） */
+.form-group.flex {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.form-group.flex > div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* セレクトボックス */
+select {
+  width: 100%;
+  min-width: 300px;
+  border-radius: 12px;
+  border: 1.5px solid #10b981;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  outline-offset: 2px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+select:focus {
+  border-color: #059669;
+  box-shadow: 0 0 8px #34d399;
+}
+
+/* ラジオボタンの親グループを横並びで中央寄せ */
+.radio-group {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+/* ラジオボタンのラベル */
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+  color: #065F46;
+}
+
+/* ラジオボタンの色 */
+input[type="radio"] {
+  color: #10b981;
+  accent-color: #10b981;
+}
+
+/* 送信ボタン */
+button[type="submit"] {
+  background-color: #10b981;
+  color: white;
+  font-weight: 700;
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  box-shadow: 0 6px;
+}
+
+/* フッター中央寄せ */
+footer {
+  text-align: center;
+  padding: 1rem;
+  color: #047857;
+  font-weight: 500;
+}

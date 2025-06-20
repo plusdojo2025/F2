@@ -8,7 +8,7 @@
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/assets/css/style.css">
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/assets/css/preview.css">
+	href="${pageContext.request.contextPath}/assets/css/downloadPreview.css">
 </head>
 <body>
 	<!-- 共通ヘッダー -->
@@ -28,19 +28,23 @@
 	<main>
 		<!-- 議事録の表示（形式に応じて切り替え） -->
 		<div class="minutes-preview">
-			<pre>
-				<c:out value="${previewText}" />
-			</pre>
+			<pre><c:out value="${previewText}" /></pre>
 		</div>
 
 		<!-- 出力ボタンフォーム -->
-		<form action="${pageContext.request.contextPath}/download"
-			method="post">
-			<input type="hidden" name="meeting" value="${meetingId}" /> <input
-				type="hidden" name="format" value="${format}" />
+		<div class="download-actions">
+			<form action="${pageContext.request.contextPath}/download"
+				method="post">
+				<input type="hidden" name="meeting" value="${dto.meeting_id}" /> <input
+					type="hidden" name="format" value="text" />
+				<button type="submit">この内容で出力</button>
+			</form>
+			<form action="${pageContext.request.contextPath}/download"
+				method="get">
+				<button type="submit">戻る</button>
+			</form>
+		</div>
 
-			<button type="submit" class="confirm-button">この内容で出力</button>
-		</form>
 
 	</main>
 
