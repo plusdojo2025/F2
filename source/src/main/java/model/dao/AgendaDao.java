@@ -79,5 +79,29 @@ public class AgendaDao {
         }
         return list;
     }
+ // 会議IDに紐づく議題をすべて削除し、新しく上書き登録する
+    public void replaceAgendaList(int meetingId, List<AgendaDto> newAgendas) throws SQLException {
+        // 論理削除
+        String deleteSql = "UPDATE agendas SET is_deleted = 1 WHERE meeting_id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(deleteSql)) {
+            stmt.setInt(1, meetingId);
+            stmt.executeUpdate();
+        }
+
+        // 新しい議題を挿入（order_numberはリスト順で再定義）
+        String insertSql = "INSERT INTO agendas (meeting_id, title, order_number, speech_note, decision_note, is_deleted) VALUES (?, ?, ?, ?, ?, 0)";
+        try (PreparedStatement stmt = conn.prepareStatement(insertSql)) {
+            for (int i = 0; i < newAgendas.size(); i++) {
+                AgendaDto agenda = newAgendas.get(i);
+                stmt.setInt(1, meetingId);
+                stmt.setString(2, agenda.getTitle());
+                stmt.setInt(3, i); // order_number はリスト順で再設定
+                stmt.setString(4, agenda.getSpeechNote());
+                stmt.setString(5, agenda.getDecisionNote());
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
+        }
+    }
 	
 }

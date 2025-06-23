@@ -114,7 +114,11 @@ public class MinutesManagementOutputDao {
 	}
 	
 	// ▼ ログ書き込み用（MinutesManagementOutputテーブルへの書き込み） ▼
+<<<<<<< Updated upstream
 	public void insertOutputLog(Connection conn, MinutesManagementAndOutputDto dto) throws SQLException {
+=======
+	public void insertOutputLog(MinutesManagementAndOutputDto dto) throws SQLException {
+>>>>>>> Stashed changes
 	    String sql = "INSERT INTO MinutesManagementOutput (meeting_id, created_by, output_format) VALUES (?, ?, ?)";
 	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
 	        ps.setInt(1, dto.getmeeting_id());

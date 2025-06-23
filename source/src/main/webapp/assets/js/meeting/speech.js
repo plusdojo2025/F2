@@ -19,11 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ✅ 議題追加ロジックを関数化
   const addAgenda = () => {
-    const fragment = agendaTemplate.content.cloneNode(true);
-    const div = fragment.firstElementChild;
-    const replaced = div.outerHTML.replace(/PLACEHOLDER_INDEX/g, agendaIndex);
-    agendaFormsContainer.insertAdjacentHTML('beforeend', replaced);
-    agendaIndex++;
+    if (agendaTemplate && agendaFormsContainer) {
+      const fragment = agendaTemplate.content.cloneNode(true);
+      const div = fragment.firstElementChild;
+      const replaced = div.outerHTML.replace(/PLACEHOLDER_INDEX/g, agendaIndex);
+      agendaFormsContainer.insertAdjacentHTML('beforeend', replaced);
+      agendaIndex++;
+    }
   };
 
   // ✅ 議題追加ボタン → モーダル表示
@@ -71,4 +73,19 @@ document.addEventListener('DOMContentLoaded', () => {
       resetModal.classList.add('hidden');
     });
   }
-}); 
+
+  // ✅ 動的に追加された議題の削除ボタンに対応
+  if (agendaFormsContainer) {
+    agendaFormsContainer.addEventListener('click', function(e) {
+      if (e.target && e.target.classList.contains('delete-agenda-button')) {
+        if (confirm('この議題を削除しますか？')) {
+          const agendaBlock = e.target.closest('.agenda-block');
+          if (agendaBlock) {
+            agendaBlock.remove();
+            // インデックスの再採番は、サーバー側で順序を担保するため、ここでは行わない
+          }
+        }
+      }
+    });
+  }
+});

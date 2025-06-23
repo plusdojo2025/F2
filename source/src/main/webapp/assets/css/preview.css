@@ -1,0 +1,281 @@
+@charset "UTF-8";
+
+/* ===== 全体背景 ===== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Noto Serif JP', 'Noto Sans JP', sans-serif;
+  background: url('/assets/images/noise.png'), linear-gradient(135deg, #a2f4ff, #f5feff);
+  background-blend-mode: soft-light;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #065f46;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== ヘッダー ===== */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background-color: #f8fdfc;
+  border-bottom: 1px solid #cfe7e2;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+.logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #047857;
+}
+.nav a {
+  margin-left: 1.5rem;
+  font-size: 1.2rem;
+  font-weight: 900;
+  text-decoration: none;
+  color: #047857;
+}
+.nav a:hover {
+  color: #10b981;
+}
+
+/* ===== ラッパー ===== */
+.preview-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+/* ===== 表示切替ボタン ===== */
+.toggle-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+.btn {
+  padding: 0.8rem 2rem;
+  font-weight: bold;
+  font-size: 1.1rem;
+  border: none;
+  border-radius: 9999px;
+  background-color: #fcd34d;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.btn:hover {
+  background-color: #fde68a;
+  transform: translateY(-2px);
+}
+.selected {
+  background-color: #f59e0b;
+  color: white;
+}
+
+/* ===== プレビューカード ===== */
+.preview-card {
+  position: relative;
+  width: 100%;
+  max-width: 900px;
+  padding: 3rem 4rem;
+  border-radius: 0.75rem;
+  background: #fffdf8;
+  border: 2px solid #f5c78b;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+.preview-card:hover {
+  transform: scale(1.01);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+}
+.preview-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(240, 230, 210, 0.05) 0,
+    rgba(240, 230, 210, 0.05) 1px,
+    transparent 1px,
+    transparent 20px
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ===== タイトル ===== */
+.title {
+  font-size: 2.5rem;
+  font-family: 'Yu Mincho', serif;
+  font-weight: bold;
+  color: #8b2c0d;
+  border-bottom: 3px solid #facc15;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  overflow-wrap: break-word;
+}
+
+/* ===== 会議情報（中央寄せ＋線） ===== */
+.info {
+  background-color: #fffef9;
+  border: 1px solid #facc15;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+.info p {
+  font-size: 1.15rem;
+  color: #065f46;
+  font-weight: 500;
+  margin: 0.3rem 0;
+}
+/* 下線線制御（必要な hr 以外を消す） */
+.info p::after,
+.info p::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  border: none !important;
+  height: 0 !important;
+  width: 0 !important;
+}
+.info-divider.full {
+  width: 100%;
+  height: 1px;
+  background-color: #808080;
+  border: none;
+  margin: 1rem 0;
+}
+
+/* ===== 議題カード（2列対応） ===== */
+.agenda-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2.5rem 2rem;
+  width: 100%;
+}
+.agenda-item {
+  background: #ffffff;
+  padding: 2rem;
+  border: 2px dashed #fcd34d;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+.agenda-item:hover {
+  background: #fff7eb;
+}
+.agenda-item h3 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #92400e;
+  margin-bottom: 1rem;
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* ===== 発言・決定事項 ===== */
+.speech strong,
+.decision strong {
+  color: #92400e;
+  font-size: 1.15rem;
+}
+.speech pre,
+.decision pre {
+  background: #fefefe;
+  border: 1px dashed #ddd6ce;
+  padding: 1rem 1.2rem;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  border-radius: 0.6rem;
+  margin-top: 0.6rem;
+  white-space: pre-wrap;
+  color: #1f2937;
+  font-family: 'Courier New', Courier, monospace;
+  overflow-wrap: break-word;
+}
+
+/* ===== テーブル（簡易） ===== */
+.simple-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.simple-table th {
+  background-color: #fde68a;
+  padding: 0.75rem;
+  font-size: 1rem;
+  text-align: left;
+}
+.simple-table td {
+  background-color: #fef9c3;
+  padding: 0.75rem;
+  border-bottom: 1px solid #fcd34d;
+  font-size: 0.95rem;
+}
+
+/* ===== アクションボタン ===== */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin-top: 2rem;
+}
+.btn.save {
+  background-color: #d97706;
+  color: white;
+}
+.btn.save:hover {
+  background-color: #b45309;
+}
+.btn.cancel {
+  background-color: #2563eb;
+  color: white;
+}
+.btn.cancel:hover {
+  background-color: #1d4ed8;
+}
+
+/* ===== フッター ===== */
+.footer {
+  margin-top: auto;
+  padding: 2rem 0;
+  text-align: center;
+  font-size: 1rem;
+  color: #047857;
+}
+
+/* ===== 表示制御 ===== */
+.hidden {
+  display: none;
+}
+
+/* ===== レスポンシブ対応 ===== */
+@media (max-width: 768px) {
+  .preview-wrapper {
+    padding: 1rem;
+  }
+  .preview-card {
+    padding: 2rem;
+    border-radius: 1rem;
+  }
+  .title {
+    font-size: 2rem;
+  }
+  .info p {
+    font-size: 1.1rem;
+  }
+  .agenda-item h3 {
+    font-size: 1.2rem;
+  }
+}

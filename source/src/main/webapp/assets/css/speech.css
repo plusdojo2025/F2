@@ -6,28 +6,26 @@ html, body {
   padding: 0;
   min-height: 100vh;
   font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
-  background: url('/images/noise.png'), linear-gradient(135deg, #a2f4ff, #f5feff);
-  background-blend-mode: soft-light;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background: linear-gradient(135deg, #a2f4ff, #f5feff);
   color: #065f46;
   box-sizing: border-box;
 }
 
-/* ===== ヘッダー ===== */
-header {
+/* ===== ヘッダー（会議一覧ページと統一） ===== */
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1.25rem 2rem;
-  background-color: #f8fdfc;
+  background-color: #F8FDFC;
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-  border-bottom: 1px solid #e0f2f1;
+  border-bottom: 1px solid #E0F2F1;
   position: sticky;
   top: 0;
   z-index: 100;
 }
-header h1 {
+
+.header .logo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -37,37 +35,34 @@ header h1 {
   margin: 0;
   line-height: 1.2;
 }
-nav {
+
+.header .nav {
   display: flex;
   gap: 2rem;
 }
-nav a {
+
+.header .nav a {
   font-weight: 600;
   text-decoration: none;
   color: #047857;
 }
-nav a:hover {
-  color: #10b981;
+
+.header .nav a:hover {
+  color: #10B981;
 }
 
-/* ===== メインコンテンツ ===== */
 main {
-  padding: 2rem 1rem;
+    max-width: 800px;
+    margin: 2rem auto 4rem;
+    padding: 2.5rem 3.5rem 3.5rem 3.5rem;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(14px);
+    border-radius: 1.5rem;
+    box-shadow: 0 6px 24px rgba(16, 185, 129, 0.1);
 }
 
-.main-content {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 0rem 2rem 0rem 2rem; /*変更*/
-  background-color: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(14px);
-  border-radius: 1.5rem;
-  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.1);
-  box-sizing: border-box;
-}
-
-.glass {
-  margin-top: 1rem !important;
+.main-container {
+    padding-top: 1rem !important;
 }
 
 .page-title {
@@ -138,6 +133,10 @@ input:focus, textarea:focus {
   background-color: #10b981;
   color: white;
 }
+.btn-preview {
+  background-color: #66bb6a; /* 緑色系 */
+  color: white;
+}
 .buttons button:hover {
   transform: translateY(-1px);
   opacity: 0.9;
@@ -145,54 +144,79 @@ input:focus, textarea:focus {
 
 /* ===== フッター ===== */
 footer {
-  text-align: center;
-  font-size: 0.875rem;
-  color: #047857;
-  padding: 2rem 0;
+    width: 100%;
+    text-align: center;
+    margin: 32px 0 0 0;
+    padding: 16px 0 8px 0;
+    background: transparent;
+    color: #17695c;
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
 }
 
 /* ===== モーダル ===== */
 .modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+    display: none; /* デフォルトで非表示 */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+}
+.modal.hidden {
+    display: none;
+}
+.modal:not(.hidden) {
+    display: flex;
 }
 .modal-content {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 1rem;
-  text-align: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  max-width: 400px;
-  width: 90%;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 24px 32px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 450px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.modal-content p {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 20px;
 }
 .modal-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
 }
-.modal-content button {
-  padding: 0.5rem 1.2rem;
+.modal-buttons button {
+  padding: 0.6rem 1.5rem;
   font-size: 0.95rem;
   font-weight: bold;
   border: none;
-  border-radius: 9999px;
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+#confirmReset, #confirmAdd {
   background-color: #10b981;
   color: white;
-  transition: opacity 0.3s ease;
 }
-.modal-content button:hover {
-  opacity: 0.85;
+#cancelReset, #cancelAdd {
+  background-color: #e2e8f0;
+  color: #4a5568;
 }
-.hidden {
-  display: none !important;
+#confirmReset:hover, #confirmAdd:hover {
+    opacity: 0.9;
+}
+#cancelReset:hover, #cancelAdd:hover {
+    background-color: #cbd5e0;
 }

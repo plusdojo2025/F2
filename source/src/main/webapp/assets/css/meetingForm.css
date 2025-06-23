@@ -1,0 +1,305 @@
+/* ===== 共通設定 ===== */
+body, html {
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
+	background: url('/images/noise.png'),
+		linear-gradient(135deg, #a2f4ff, #f5feff);
+	background-blend-mode: soft-light;
+	background-attachment: fixed;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center top;
+	color: #065f46;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+}
+
+/* ===== ヘッダー ===== */
+.header {
+	background-color: rgba(255, 255, 255, 0.85);
+	backdrop-filter: blur(12px);
+	padding: 1rem 2rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+.logo {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: #047857;
+}
+
+.nav {
+	display: flex;
+	gap: 1.5rem;
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+.nav a {
+	color: #047857;
+	text-decoration: none;
+	transition: color 0.25s ease;
+}
+
+.nav a:hover {
+	color: #10b981;
+}
+
+/* ===== タイトル ===== */
+.page-title {
+	font-size: 2rem;
+	font-weight: 800;
+	text-align: center;
+	margin-top: 2rem;
+	margin-bottom: 1rem;
+	color: #065f46;
+}
+
+/* ===== エラーメッセージ ===== */
+.error-message {
+	background-color: #fef2f2;
+	border: 1px solid #fecaca;
+	color: #dc2626;
+	padding: 1rem;
+	border-radius: 0.75rem;
+	margin: 1rem auto;
+	max-width: 600px;
+	text-align: center;
+	font-weight: 600;
+}
+
+/* ===== メイン ===== */
+.main-container {
+	max-width: 600px;
+	margin: 2rem auto;
+	padding: 2rem;
+	padding-bottom: 4rem; background-color : rgba( 255, 255, 255, 0.9);
+	border-radius: 1rem;
+	box-shadow: 0 8px 24px rgba(16, 185, 129, 0.1);
+	backdrop-filter: blur(10px);
+	background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== フォーム共通 ===== */
+.form-group {
+	flex: 1;
+	min-width: 150px;
+	display: flex; /* ← これがなかった */
+	flex-direction: column; /* ← これも重要 */
+	margin-bottom: 1rem;
+}
+
+label {
+	font-weight: 600;
+	margin-bottom: 0.5rem;
+}
+
+input[type="text"], input[type="date"] {
+	padding: 0.6rem 1rem;
+	font-size: 1rem;
+	border: 1.5px solid #a7d7c5;
+	border-radius: 0.75rem;
+	background-color: rgba(255, 255, 255, 0.9);
+	color: #065f46;
+	transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="text"]:focus, input[type="date"]:focus {
+	outline: none;
+	border-color: #10b981;
+	box-shadow: 0 0 8px #10b981aa;
+	background-color: #fff;
+}
+
+input[type="time"] {
+	padding: 0.6rem 1rem;
+	font-size: 1rem;
+	border: 1.5px solid #a7d7c5;
+	border-radius: 0.75rem;
+	background-color: rgba(255, 255, 255, 0.9);
+	color: #065f46;
+	transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[type="time"]:focus {
+	outline: none;
+	border-color: #10b981;
+	box-shadow: 0 0 8px #10b981aa;
+	background-color: #fff;
+}
+
+/* ===== フォームの2列レイアウト ===== */
+.form-row {
+	display: flex;
+	gap: 1rem;
+	margin-bottom: 1.5rem;
+	flex-wrap: wrap; /* モバイルでも崩れないように */
+}
+
+/* ===== ボタン類 ===== */
+.button-row {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin-top: 2rem;
+	flex-wrap: wrap;
+}
+
+.button {
+	padding: 0.6rem 1.5rem;
+	font-size: 1rem;
+	font-weight: bold;
+	border-radius: 1rem;
+	cursor: pointer;
+	text-decoration: none;
+	border: none;
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button.next {
+	background-color: #10b981;
+	color: white;
+}
+
+.button.submit {
+	background-color: #2563eb;
+	color: white;
+}
+
+.button.cancel {
+	background-color: #d1d5db;
+	color: #374151;
+}
+
+.button:hover {
+	opacity: 0.9;
+}
+
+/* ===== フッター ===== */
+.footer {
+	margin-top: auto;
+	text-align: center;
+	font-size: 0.875rem;
+	padding: 2rem 0;
+	color: #4b5563;
+}
+
+/* ===== タブ切り替えボタン ===== */
+.tab-buttons {
+	display: flex;
+	justify-content: center;
+	gap: 1rem;
+	margin: 1.5rem 0;
+}
+
+.tab-buttons button {
+	padding: 0.5rem 1.25rem;
+	font-size: 1rem;
+	font-weight: 600;
+	background-color: #f0fdf4;
+	color: #047857;
+	border: 2px solid #a7d7c5;
+	border-radius: 1rem;
+	cursor: pointer;
+	transition: all 0.3s ease;
+}
+
+.tab-buttons button:hover {
+	background-color: #d1fae5;
+	color: #065f46;
+	border-color: #10b981;
+}
+
+.tab-buttons button.active {
+	background-color: #10b981;
+	color: white;
+	border-color: #10b981;
+}
+
+/* ===== タブコンテンツ切り替え ===== */
+.tab-content {
+	display: block;
+}
+
+.tab-content.hidden {
+	display: none;
+}
+
+/* ===== 議題ブロック（発言編集エリア） ===== */
+.agenda-block {
+	max-width: 640px;
+	margin: 0 auto;
+	margin-bottom: 2rem;
+	padding: 1.25rem;
+	background-color: rgba(255, 255, 255, 0.85);
+	border-radius: 1rem;
+	box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
+}
+
+.agenda-block label {
+	display: block;
+	font-weight: 600;
+	margin-top: 1rem;
+	margin-bottom: 0.5rem;
+}
+
+.agenda-block input[type="text"], .agenda-block textarea {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	box-sizing: border-box; /* ← 必須！ */
+	font-size: 1rem;
+	border: 1.5px solid #a7d7c5;
+	border-radius: 0.75rem;
+	background-color: rgba(255, 255, 255, 0.95);
+	color: #065f46;
+	resize: vertical;
+	transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.agenda-block textarea:focus, .agenda-block input[type="text"]:focus {
+	outline: none;
+	border-color: #10b981;
+	box-shadow: 0 0 8px #10b98188;
+}
+
+/* ===== 議題追加ボタン ===== */
+#add-agenda-button {
+	background-color: #10b981;
+	color: white;
+	font-size: 0.95rem;
+	font-weight: 600;
+	padding: 0.5rem 1.25rem;
+	border-radius: 1rem;
+	border: none;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+#add-agenda-button:hover {
+	background-color: #059669;
+}
+
+/* ===== 議題削除ボタン ===== */
+.delete-agenda-button {
+	display: inline-block;
+	margin-top: 1rem;
+	padding: 0.4rem 1rem;
+	font-size: 0.9rem;
+	font-weight: bold;
+	background-color: #ef4444;
+	color: white;
+	border: none;
+	border-radius: 0.75rem;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.delete-agenda-button:hover {
+	background-color: #dc2626;
+}

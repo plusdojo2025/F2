@@ -18,73 +18,68 @@
 
   <!-- ヘッダー -->
   <header class="header">
-    <h1 class="logo">ぎじろくん</h1>
+    <h1 class="logo">📘 ぎじろくん</h1>
     <nav class="nav">
       <a href="${pageContext.request.contextPath}/dashboard">ホーム</a>
       <a href="${pageContext.request.contextPath}/meeting/list">会議一覧</a>
       <a href="${pageContext.request.contextPath}/meeting/create">会議作成</a>
       <a href="${pageContext.request.contextPath}/download">出力</a>
-      <a href="${pageContext.request.contextPath}/settings">アカウント設定</a>
+      <a href="${pageContext.request.contextPath}/user/settings">アカウント設定</a>
     </nav>
   </header>
 
   <!-- メイン -->
-  <main>
-    <div class="main-content">
-      <div class="glass" style="max-width: 720px; margin: 2rem auto; padding: 2rem;">
-        <h2 class="page-title">発言・決定事項入力</h2>
+  <main class="main-container">
+    <h2 class="page-title">発言・決定事項入力</h2>
 
-        <form action="${pageContext.request.contextPath}/speech/register" method="POST">
-          <!-- meetingId を送信するための hidden input -->
-          <input type="hidden" name="meetingId" value="<%= meetingId %>">
+    <form method="post" action="${pageContext.request.contextPath}/speech/register">
+      <input type="hidden" name="meetingId" value="${meeting.meetingId}" />
 
-          <div id="agenda-forms-container">
-            <div class="agenda-block" data-agenda-index="0">
-              <div class="form-group">
-                <label for="agenda0-title">議題</label>
-                <input type="text" id="agenda0-title" name="agendas[0].title" placeholder="例：開発進捗確認" class="form-input">
-              </div>
-              <div class="sub-section">
-                <div class="form-group">
-                  <label for="agenda0-speech">発言内容</label>
-                  <textarea id="agenda0-speech" name="agendas[0].speechNote" class="form-input" rows="3" placeholder="発言者: 内容を入力してください"></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="agenda0-decision">決定事項</label>
-                  <textarea id="agenda0-decision" name="agendas[0].decisionNote" class="form-input" rows="3" placeholder="この議題で決まった内容を記載してください"></textarea>
-                </div>
-              </div>
-            </div>
+      <div id="agenda-forms-container">
+        <div class="agenda-block" data-agenda-index="0">
+          <div class="form-group">
+            <label for="agenda0-title">議題</label>
+            <input type="text" id="agenda0-title" name="agendas[0].title" placeholder="例：開発進捗確認">
           </div>
-
-          <!-- JSで追加される議題テンプレート -->
-          <template id="agenda-form-template">
-            <div class="agenda-block" data-agenda-index="PLACEHOLDER_INDEX">
-              <div class="form-group">
-                <label for="agendaPLACEHOLDER_INDEX-title">議題</label>
-                <input type="text" id="agendaPLACEHOLDER_INDEX-title" name="agendas[PLACEHOLDER_INDEX].title" placeholder="例：開発進捗確認" class="form-input">
-              </div>
-              <div class="sub-section">
-                <div class="form-group">
-                  <label for="agendaPLACEHOLDER_INDEX-speech">発言内容</label>
-                  <textarea id="agendaPLACEHOLDER_INDEX-speech" name="agendas[PLACEHOLDER_INDEX].speechNote" class="form-input" rows="3" placeholder="発言者: 内容を入力してください"></textarea>
-                </div>
-                <div class="form-group">
-                  <label for="agendaPLACEHOLDER_INDEX-decision">決定事項</label>
-                  <textarea id="agendaPLACEHOLDER_INDEX-decision" name="agendas[PLACEHOLDER_INDEX].decisionNote" class="form-input" rows="3" placeholder="この議題で決まった内容を記載してください"></textarea>
-                </div>
-              </div>
-            </div>
-          </template>
-
-          <div class="buttons">
-            <button type="reset" class="btn-delete">リセット</button>
-            <button type="button" class="btn-edit" id="add-agenda-button">議題を追加</button>
-            <button type="submit" class="btn-detail">次へ（プレビュー）</button>
+          <div class="form-group">
+            <label for="agenda0-speech">発言内容</label>
+            <textarea id="agenda0-speech" name="agendas[0].speechNote" rows="5" placeholder="発言者: 内容を入力してください"></textarea>
           </div>
-        </form>
+          <div class="form-group">
+            <label for="agenda0-decision">決定事項</label>
+            <textarea id="agenda0-decision" name="agendas[0].decisionNote" rows="3" placeholder="この議題で決まった内容を記載してください"></textarea>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <!-- JSで追加される議題テンプレート -->
+      <template id="agenda-form-template">
+        <div class="agenda-block" data-agenda-index="PLACEHOLDER_INDEX">
+           <hr style="margin: 2rem 0; border-color: #99f6e4;">
+          <div class="form-group">
+            <label for="agendaPLACEHOLDER_INDEX-title">議題</label>
+            <input type="text" id="agendaPLACEHOLDER_INDEX-title" name="agendas[PLACEHOLDER_INDEX].title" placeholder="例：開発進捗確認">
+          </div>
+          <div class.form-group">
+            <label for="agendaPLACEHOLDER_INDEX-speech">発言内容</label>
+            <textarea id="agendaPLACEHOLDER_INDEX-speech" name="agendas[PLACEHOLDER_INDEX].speechNote" rows="5" placeholder="発言者: 内容を入力してください"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="agendaPLACEHOLDER_INDEX-decision">決定事項</label>
+            <textarea id="agendaPLACEHOLDER_INDEX-decision" name="agendas[PLACEHOLDER_INDEX].decisionNote" rows="3" placeholder="この議題で決まった内容を記載してください"></textarea>
+          </div>
+           <div class="buttons" style="justify-content: flex-end;">
+             <button type="button" class="btn-delete delete-agenda-button">この議題を削除</button>
+           </div>
+        </div>
+      </template>
+
+      <div class="buttons">
+        <button type="button" class="btn-edit" id="add-agenda-button">議題を追加</button>
+        <button type="reset" class="btn-delete">リセット</button>
+        <button type="submit" name="action" value="preview" class="btn-preview" formaction="${pageContext.request.contextPath}/meeting/preview">プレビューで確認</button>
+      </div>
+    </form>
   </main>
 
   <!-- フッター -->

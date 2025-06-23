@@ -52,13 +52,11 @@ const MeetingList = {
         const detailTime = document.getElementById('detailTime');
         const detailParticipants = document.getElementById('detailParticipants');
         const agendaBlock = document.getElementById('detailAgendaBlock');
-        const detailDecisions = document.getElementById('detailDecisions');
         const editLink = document.getElementById('editLink');
 
         // ローディング表示
         modalTitle.textContent = '読み込み中...';
         agendaBlock.innerHTML = '<div class="loading">読み込み中...</div>';
-        detailDecisions.innerHTML = '';
         modal.classList.remove('hidden');
         modal.classList.add('show');
 
@@ -77,7 +75,6 @@ const MeetingList = {
                 if (data.error) {
                     modalTitle.textContent = 'エラー';
                     agendaBlock.innerHTML = `<div class="error-message">${data.error}</div>`;
-                    detailDecisions.innerHTML = '';
                     return;
                 }
 
@@ -108,6 +105,14 @@ const MeetingList = {
                             }
                             html += '</div>';
                         }
+                        // 議題の決定事項も表示
+                        if (agenda.decisionNote) {
+                            const decisionHtml = agenda.decisionNote.replace(/\n/g, '<br>');
+                            html += `<div class="agenda-decision">
+                                       <strong>決定事項</strong>
+                                       <p class="decision-text">${decisionHtml}</p>
+                                     </div>`;
+                        }
                         agendaBlock.innerHTML += html;
                     });
                     // もっと見るボタンの動作
@@ -123,15 +128,12 @@ const MeetingList = {
                     agendaBlock.innerHTML = '議題・発言はありません。';
                 }
 
-                // 決定事項
-                detailDecisions.innerHTML = data.decisions || '決定事項はありません。';
                 editLink.href = `/${contextPath}/meeting/edit?id=${data.meetingId}`;
             })
             .catch(error => {
                 console.error('Error:', error);
                 modalTitle.textContent = 'エラー';
                 agendaBlock.innerHTML = '<div class="error-message">データの取得に失敗しました。</div>';
-                detailDecisions.innerHTML = '';
             });
     },
 
@@ -187,7 +189,7 @@ const MeetingList = {
                         data.agendas.forEach(agenda => {
                             tableBody.innerHTML += `<tr>
                                 <td style="word-break:break-all;">${agenda.title}</td>
-                                <td style="word-break:break-all;">${agenda.decisionNote || ''}</td>
+                                <td style="word-break:break-all;">${agenda.decisionNote || '決定事項なし'}</td>
                             </tr>`;
                         });
                     } else {
@@ -240,13 +242,167 @@ const MeetingList = {
         };
     }
 };
-
 // 会議編集ページの機能
-const MeetingEdit = {
-    init: function() {
-        // 編集ページの初期化処理
+		const MeetingEdit = {
+		    init: function () {
+		        this.initTabSwitch();
+		        this.initButtons();
+		    },
+		
+		    initTabSwitch: function () {
+		    const tabs = ['meeting-tab', 'speech-tab'];
+		    const buttons = document.querySelectorAll('.tab-buttons button');
+		
+		    buttons.forEach((button, index) => {
+		        button.addEventListener('click', function () {
+		            // ボタンのテキストでタブを判定
+		            const target = this.textContent.includes('会議') ? 'meeting-tab' : 'speech-tab';
+		
+		            // 全タブを非表示にする
+		            tabs.forEach(tabId => {
+		                const tab = document.getElementById(tabId);
+		                if (tab) {
+		                    tab.classList.add('hidden');
+		                }
+		            });
+		
+		            // 対象のタブを表示する
+		            const targetTab = document.getElementById(target);
+		            if (targetTab) {
+		                targetTab.classList.remove('hidden');
+		            }
+		            
+		            // ボタンのアクティブ状態を更新
+		            buttons.forEach(btn => btn.classList.remove('active'));
+		            this.classList.add('active');
+		        });
+		    });
+		    
+		    // 初期状態で会議タブをアクティブにする
+		    if (buttons.length > 0) {
+		        buttons[0].classList.add('active');
+		    }
+		},
+
+    // ボタン機能（追加／削除／保存／プレビュー）
+    initButtons: function () {
+        const contextPath = '/' + window.location.pathname.split('/')[1];
+
+        // 議題を追加
+        const addBtn = document.getElementById('add-agenda-button');
+        if (addBtn) {
+            addBtn.addEventListener('click', function () {
+                const agendaContainer = document.getElementById('agenda-container');
+                const template = document.getElementById('agenda-template');
+                if (template && agendaContainer) {
+                    const clone = template.content.cloneNode(true);
+                    
+                    // インデックスを正しく設定
+                    const agendaBlocks = agendaContainer.querySelectorAll('.agenda-block');
+                    const newIndex = agendaBlocks.length;
+                    
+                    // name属性のINDEXを実際のインデックスに置換
+                    clone.querySelectorAll('[name*="INDEX"]').forEach(element => {
+                        element.name = element.name.replace('INDEX', newIndex);
+                    });
+                    
+                    agendaContainer.appendChild(clone);
+                }
+            });
+        }
+
+        // 削除（動的対応）
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.classList.contains('delete-agenda-button')) {
+                const agendaBlock = e.target.closest('.agenda-block');
+                if (agendaBlock) {
+                    agendaBlock.remove();
+                    
+                    // インデックスを再設定
+                    const agendaContainer = document.getElementById('agenda-container');
+                    if (agendaContainer) {
+                        const agendaBlocks = agendaContainer.querySelectorAll('.agenda-block');
+                        agendaBlocks.forEach((block, index) => {
+                            block.querySelectorAll('[name*="agendas["]').forEach(element => {
+                                const currentName = element.name;
+                                const newName = currentName.replace(/agendas\[\d+\]/, `agendas[${index}]`);
+                                element.name = newName;
+                            });
+                        });
+                    }
+                }
+            }
+        });
+
+        // data-confirm属性の処理
+        document.addEventListener('click', function (e) {
+            if (e.target && e.target.hasAttribute('data-confirm')) {
+                const confirmMessage = e.target.getAttribute('data-confirm');
+                if (!confirm(confirmMessage)) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+        });
+
+        // 変更を保存（submitボタン）
+        const submitBtn = document.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', function (e) {
+                // 編集モードの場合のみ確認ダイアログを表示
+                const isEditMode = document.querySelector('input[name="meetingId"]').value !== '';
+                if (isEditMode) {
+                    const speechTab = document.getElementById('speech-tab');
+                    const isSpeechTabVisible = speechTab && !speechTab.classList.contains('hidden');
+                    
+                    if (isSpeechTabVisible) {
+                        // 発言タブが表示されている場合：直接保存して一覧に戻る
+                        // 何もしない（通常のフォーム送信）
+                    } else {
+                        // 会議タブが表示されている場合：確認ダイアログを表示
+                        e.preventDefault();
+                        const choice = confirm('発言も編集しますか？\n\nOK → 発言編集画面に移動\nCancel → 会議情報のみ保存して一覧に戻る');
+                        
+                        if (choice) {
+                            // OK：発言タブに移動
+                            const meetingTab = document.getElementById('meeting-tab');
+                            const tabButtons = document.querySelectorAll('.tab-buttons button');
+                            
+                            if (speechTab && meetingTab) {
+                                meetingTab.classList.add('hidden');
+                                speechTab.classList.remove('hidden');
+                                
+                                // タブボタンのアクティブ状態を更新
+                                tabButtons.forEach(btn => btn.classList.remove('active'));
+                                tabButtons[1].classList.add('active'); // 発言タブをアクティブに
+                                
+                                // 保存ボタンのテキストを変更
+                                submitBtn.textContent = '発言を保存して一覧に戻る';
+                            }
+                        } else {
+                            // Cancel：フォームを送信して一覧に戻る
+                            const form = submitBtn.closest('form');
+                            if (form) {
+                                form.submit();
+                            }
+                        }
+                    }
+                }
+                // 作成モードの場合は通常通り送信
+            });
+        }
+
+        // プレビューで確認
+        const previewBtn = document.querySelector('button[formaction*="preview"]');
+        if (previewBtn) {
+            previewBtn.addEventListener('click', function (e) {
+                // data-confirm属性の処理は上記で既に処理される
+                // formaction属性により自動的にプレビューページに送信される
+            });
+        }
     }
 };
+
 
 // ページ読み込み時の初期化
 document.addEventListener('DOMContentLoaded', function() {

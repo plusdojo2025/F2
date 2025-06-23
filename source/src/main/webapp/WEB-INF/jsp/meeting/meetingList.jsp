@@ -18,7 +18,7 @@
             <a href="${pageContext.request.contextPath}/dashboard">ホーム</a>
             <a href="${pageContext.request.contextPath}/meeting/list">会議一覧</a>
             <a href="${pageContext.request.contextPath}/meeting/create">会議作成</a>
-            <a href="${pageContext.request.contextPath}/download/preview">出力</a>
+            <a href="${pageContext.request.contextPath}/download">出力</a>
             <a href="${pageContext.request.contextPath}/settings">アカウント設定</a>
         </nav>
     </header>
@@ -107,11 +107,7 @@
                     <hr>
                     <!-- 議題・発言ブロック -->
                     <div id="detailAgendaBlock" class="agenda-block"></div>
-                    <!-- 決定事項ブロック -->
-                    <div id="detailDecisionBlock" class="decision-block">
-                        <div class="decision-title">決定事項</div>
-                        <div id="detailDecisions" class="decision-content"></div>
-                    </div>
+                    <!-- 決定事項ブロックはJSで議題ごとに表示するため削除 -->
                     <div class="modal-actions">
                         <a href="#" id="editLink" class="btn btn-edit"><i class="fas fa-edit"></i> 編集</a>
                         <button type="button" class="btn btn-delete" onclick="showDeleteModal()"><i class="fas fa-trash"></i> 削除</button>
