@@ -11,6 +11,14 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- ログイン用のユーザ
+INSERT INTO users (username, email, password_hash)
+VALUES (
+  'dojouser1',
+  'dojouser1@plusdojo.jp',
+  '15d2305a4566c8f987df4060ad3bb8703f9dd56b389c62f37b6ef3446e83e3a3'
+);
 -- 会議テーブル
 CREATE TABLE meetings (
     meeting_id INT PRIMARY KEY AUTO_INCREMENT,
