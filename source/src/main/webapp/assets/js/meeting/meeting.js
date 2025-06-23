@@ -88,20 +88,20 @@ const MeetingList = {
                 agendaBlock.innerHTML = '';
                 if (data.agendas && data.agendas.length > 0) {
                     data.agendas.forEach(agenda => {
-                        let html = `<div class=\"agenda-title\" style=\"font-weight:bold;color:#1ca97c;font-size:1.1em;margin:16px 0 8px 0;\">[${agenda.title}]</div>`;
+                        let html = `<div class="agenda-title" style="font-weight:bold;color:#1ca97c;font-size:1.1em;margin:16px 0 8px 0;">[${agenda.title}]</div>`;
                         if (agenda.speechNote) {
                             // 発言を「名前：内容」で複数行に分割
                             const speeches = agenda.speechNote.split('\n');
                             html += '<div class="speech-list">';
                             speeches.forEach((line, idx) => {
                                 if (idx === 0) {
-                                    html += `<div class=\"speech-line\" style=\"color:#1ca97c;margin-left:8px;margin-bottom:2px;\">${line}</div>`;
+                                    html += `<div class="speech-line" style="color:#1ca97c;margin-left:8px;margin-bottom:2px;">${line}</div>`;
                                 } else {
-                                    html += `<div class=\"speech-line more-speech\" style=\"color:#1ca97c;margin-left:8px;margin-bottom:2px;display:none;\">${line}</div>`;
+                                    html += `<div class="speech-line more-speech" style="color:#1ca97c;margin-left:8px;margin-bottom:2px;display:none;">${line}</div>`;
                                 }
                             });
                             if (speeches.length > 1) {
-                                html += `<button class=\"show-more-btn\" style=\"color:#1ca97c;background:none;border:none;cursor:pointer;margin-top:4px;\">▼もっと見る</button>`;
+                                html += `<button class="show-more-btn" style="color:#1ca97c;background:none;border:none;cursor:pointer;margin-top:4px;">▼もっと見る</button>`;
                             }
                             html += '</div>';
                         }
@@ -243,46 +243,46 @@ const MeetingList = {
     }
 };
 // 会議編集ページの機能
-		const MeetingEdit = {
-		    init: function () {
-		        this.initTabSwitch();
-		        this.initButtons();
-		    },
-		
-		    initTabSwitch: function () {
-		    const tabs = ['meeting-tab', 'speech-tab'];
-		    const buttons = document.querySelectorAll('.tab-buttons button');
-		
-		    buttons.forEach((button, index) => {
-		        button.addEventListener('click', function () {
-		            // ボタンのテキストでタブを判定
-		            const target = this.textContent.includes('会議') ? 'meeting-tab' : 'speech-tab';
-		
-		            // 全タブを非表示にする
-		            tabs.forEach(tabId => {
-		                const tab = document.getElementById(tabId);
-		                if (tab) {
-		                    tab.classList.add('hidden');
-		                }
-		            });
-		
-		            // 対象のタブを表示する
-		            const targetTab = document.getElementById(target);
-		            if (targetTab) {
-		                targetTab.classList.remove('hidden');
-		            }
-		            
-		            // ボタンのアクティブ状態を更新
-		            buttons.forEach(btn => btn.classList.remove('active'));
-		            this.classList.add('active');
-		        });
-		    });
-		    
-		    // 初期状態で会議タブをアクティブにする
-		    if (buttons.length > 0) {
-		        buttons[0].classList.add('active');
-		    }
-		},
+const MeetingEdit = {
+    init: function () {
+        this.initTabSwitch();
+        this.initButtons();
+    },
+
+    initTabSwitch: function () {
+    const tabs = ['meeting-tab', 'speech-tab'];
+    const buttons = document.querySelectorAll('.tab-buttons button');
+
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', function () {
+            // ボタンのテキストでタブを判定
+            const target = this.textContent.includes('会議') ? 'meeting-tab' : 'speech-tab';
+
+            // 全タブを非表示にする
+            tabs.forEach(tabId => {
+                const tab = document.getElementById(tabId);
+                if (tab) {
+                    tab.classList.add('hidden');
+                }
+            });
+
+            // 対象のタブを表示する
+            const targetTab = document.getElementById(target);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+            }
+            
+            // ボタンのアクティブ状態を更新
+            buttons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // 初期状態で会議タブをアクティブにする
+    if (buttons.length > 0) {
+        buttons[0].classList.add('active');
+    }
+},
 
     // ボタン機能（追加／削除／保存／プレビュー）
     initButtons: function () {
