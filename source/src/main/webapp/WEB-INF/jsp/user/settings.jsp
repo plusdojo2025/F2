@@ -24,7 +24,7 @@
 			<a href="${pageContext.request.contextPath}/dashboard">ホーム</a> <a
 				href="${pageContext.request.contextPath}/meeting/list">会議一覧</a> <a
 				href="${pageContext.request.contextPath}/meeting/create">会議作成</a> <a
-				href="${pageContext.request.contextPath}/download/preview">出力</a> <a
+				href="${pageContext.request.contextPath}/download">出力</a> <a
 				href="${pageContext.request.contextPath}/settings">アカウント設定</a>
 		</nav>
 	</header>

@@ -22,9 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (agendaTemplate && agendaFormsContainer) {
       const fragment = agendaTemplate.content.cloneNode(true);
       const div = fragment.firstElementChild;
-      const replaced = div.outerHTML.replace(/PLACEHOLDER_INDEX/g, agendaIndex);
+      // 新しいインデックスでプレースホルダーを置換
+      const newIndex = agendaFormsContainer.querySelectorAll('.agenda-block').length;
+      const replaced = div.outerHTML.replace(/PLACEHOLDER_INDEX/g, newIndex);
       agendaFormsContainer.insertAdjacentHTML('beforeend', replaced);
-      agendaIndex++;
+      agendaIndex = newIndex + 1;
     }
   };
 
@@ -82,10 +84,34 @@ document.addEventListener('DOMContentLoaded', () => {
           const agendaBlock = e.target.closest('.agenda-block');
           if (agendaBlock) {
             agendaBlock.remove();
-            // インデックスの再採番は、サーバー側で順序を担保するため、ここでは行わない
+            reindexAgendas(); // 削除後にインデックスを再採番
           }
         }
       }
     });
+  }
+  
+  function reindexAgendas() {
+      const remainingBlocks = agendaFormsContainer.querySelectorAll('.agenda-block');
+      remainingBlocks.forEach((block, index) => {
+        // name属性を更新: agendas[5] -> agendas[2]
+        block.querySelectorAll('[name*="agendas["]').forEach(input => {
+          input.name = input.name.replace(/agendas\[\d+\]/, `agendas[${index}]`);
+        });
+        // id属性を更新: agenda5-title -> agenda2-title
+        block.querySelectorAll('[id*="agenda"]').forEach(element => {
+            if (element.id) {
+                 element.id = element.id.replace(/agenda\d+/, `agenda${index}`);
+            }
+        });
+        // for属性を更新
+        block.querySelectorAll('label[for*="agenda"]').forEach(label => {
+            if(label.htmlFor){
+                label.htmlFor = label.htmlFor.replace(/agenda\d+/, `agenda${index}`);
+            }
+        });
+      });
+      // 次に追加する議題のためのインデックスも更新
+      agendaIndex = remainingBlocks.length;
   }
 });

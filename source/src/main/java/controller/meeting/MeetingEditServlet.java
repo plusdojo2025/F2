@@ -143,13 +143,30 @@ public class MeetingEditServlet extends HttpServlet {
 
                 // 議題データを処理
                 int i = 0;
-                while (request.getParameter("agendas[" + i + "].title") != null) {
+                while (true) {
+                    String agendaTitle = request.getParameter("agendas[" + i + "].title");
+
+                    if (agendaTitle == null) {
+                        break;
+                    }
+
+                    if (agendaTitle.trim().isEmpty()) {
+                        i++;
+                        continue;
+                    }
+
                     AgendaDto agenda = new AgendaDto();
                     agenda.setMeetingId(newMeetingId);
-                    agenda.setTitle(request.getParameter("agendas[" + i + "].title"));
+
+                    String agendaIdStr = request.getParameter("agendas[" + i + "].agendaId");
+                    if (agendaIdStr != null && !agendaIdStr.isEmpty()) {
+                        agenda.setAgendaId(Integer.parseInt(agendaIdStr));
+                    }
+
+                    agenda.setTitle(agendaTitle);
                     agenda.setSpeechNote(request.getParameter("agendas[" + i + "].speechNote"));
                     agenda.setDecisionNote(request.getParameter("agendas[" + i + "].decisionNote"));
-                    agenda.setOrderNumber(i + 1);
+                    agenda.setOrderNumber(agendas.size() + 1);
                     agendas.add(agenda);
                     i++;
                 }
@@ -189,7 +206,18 @@ public class MeetingEditServlet extends HttpServlet {
 
                 // 議題データを処理
                 int i = 0;
-                while (request.getParameter("agendas[" + i + "].title") != null) {
+                while (true) {
+                    String agendaTitle = request.getParameter("agendas[" + i + "].title");
+
+                    if (agendaTitle == null) {
+                        break;
+                    }
+
+                    if (agendaTitle.trim().isEmpty()) {
+                        i++;
+                        continue;
+                    }
+
                     AgendaDto agenda = new AgendaDto();
                     agenda.setMeetingId(meetingId);
 
@@ -198,10 +226,10 @@ public class MeetingEditServlet extends HttpServlet {
                         agenda.setAgendaId(Integer.parseInt(agendaIdStr));
                     }
 
-                    agenda.setTitle(request.getParameter("agendas[" + i + "].title"));
+                    agenda.setTitle(agendaTitle);
                     agenda.setSpeechNote(request.getParameter("agendas[" + i + "].speechNote"));
                     agenda.setDecisionNote(request.getParameter("agendas[" + i + "].decisionNote"));
-                    agenda.setOrderNumber(i + 1);
+                    agenda.setOrderNumber(agendas.size() + 1);
                     agendas.add(agenda);
                     i++;
                 }

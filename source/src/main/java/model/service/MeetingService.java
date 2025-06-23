@@ -1,7 +1,9 @@
 package model.service;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -183,27 +185,64 @@ public class MeetingService extends BaseService {
     }
 
     // ===== 会議＋議題の編集保存（update or insert 混在対応） =====
-    public void updateMeetingAndAgendasSmart(MeetingDto meeting, List<AgendaDto> agendas) throws Exception {
+    public void updateMeetingAndAgendasSmart(MeetingDto meeting, List<AgendaDto> submittedAgendas) throws Exception {
         try (Connection conn = getConnection()) {
             conn.setAutoCommit(false);
 
-            MeetingDao meetingDao = new MeetingDao();
-            boolean updated = meetingDao.update(meeting, conn);
-            if (!updated) throw new Exception("会議の更新に失敗しました");
-
-            AgendaDao agendaDao = new AgendaDao(conn);
-
-            for (AgendaDto agenda : agendas) {
-                if (agenda.getAgendaId() != 0) {
-                    agendaDao.updateAgenda(agenda); // 既存議題 → 更新
-                } else {
-                    agendaDao.insertAgenda(agenda); // 新規議題 → 登録
+            try {
+                // 1. 会議情報を更新
+                MeetingDao meetingDao = new MeetingDao();
+                if (!meetingDao.update(meeting, conn)) {
+                    throw new SQLException("会議の更新に失敗しました: ID=" + meeting.getMeetingId());
                 }
-            }
 
-            conn.commit();
+                AgendaDao agendaDao = new AgendaDao(conn);
+                
+                // 2. DBに保存されている既存の議題IDリストを取得
+                List<AgendaDto> dbAgendas = agendaDao.findByMeetingId(meeting.getMeetingId());
+                List<Integer> dbAgendaIds = new ArrayList<>();
+                for (AgendaDto a : dbAgendas) {
+                    dbAgendaIds.add(a.getAgendaId());
+                }
+
+                // 3. フォームから送信された議題IDリストを作成
+                List<Integer> submittedAgendaIds = new ArrayList<>();
+                for (AgendaDto a : submittedAgendas) {
+                    if (a.getAgendaId() != 0) {
+                        submittedAgendaIds.add(a.getAgendaId());
+                    }
+                }
+
+                // 4. 削除された議題を特定して論理削除
+                // (DBにはあるが、フォームにはない)
+                for (Integer dbId : dbAgendaIds) {
+                    if (!submittedAgendaIds.contains(dbId)) {
+                        agendaDao.logicalDelete(dbId);
+                    }
+                }
+
+                // 5. 送信された議題を更新または新規登録
+                for (AgendaDto submittedAgenda : submittedAgendas) {
+                    if (submittedAgenda.getAgendaId() != 0) {
+                        // 既存の議題 -> 更新
+                        agendaDao.updateAgenda(submittedAgenda);
+                    } else {
+                        // 新規議題 -> 登録
+                        agendaDao.insertAgenda(submittedAgenda);
+                    }
+                }
+
+                conn.commit();
+
+            } catch (SQLException e) {
+                conn.rollback();
+                throw new Exception("データベース保存処理中にエラーが発生しました。", e);
+            }
         } catch (Exception e) {
-            throw new Exception("保存処理中にエラーが発生しました: " + e.getMessage(), e);
+            // エラーログは詳細に出力
+            System.err.println("会議と議題の保存に失敗: " + e.getMessage());
+            e.printStackTrace();
+            throw new Exception("保存処理中に予期せぬエラーが発生しました。", e);
         }
     }
 }
