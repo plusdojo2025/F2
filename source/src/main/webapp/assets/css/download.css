@@ -6,12 +6,7 @@ html, body {
   padding: 0;
   min-height: 100vh;
   font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
-  background: url('/images/noise.png'), linear-gradient(135deg, #a2f4ff, #f5feff);
-  background-blend-mode: soft-light;
-  background-attachment: fixed;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center top;
+  background: linear-gradient(135deg, #a2f4ff, #f5feff);
   color: #065f46;
   box-sizing: border-box;
 
@@ -125,7 +120,8 @@ select:focus {
   gap: 0.5rem;
 }
 
-.search-input-group input[type="text"] {
+.search-input-group input[type="text"],
+.search-input-group input[type="date"] {
   flex: 1;
   border-radius: 0.5rem 0 0 0.5rem;
 }
