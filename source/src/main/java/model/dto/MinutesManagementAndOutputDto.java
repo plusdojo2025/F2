@@ -6,6 +6,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
+
 /**
  * 議事録出力画面の検索結果用DTO。 meetingsテーブルの一部項目をマッピング。
  */
@@ -46,39 +47,9 @@ public class MinutesManagementAndOutputDto implements Serializable {
 	private Time startTime;
 	private Time endTime;
 	private List<String> participants; // カンマ区切りを分割した参加者名リスト
-	private List<AgendaDto> agendas;
+	private List<model.dto.AgendaDto> agendas;
 
-	public static class AgendaDto implements Serializable {
-		private static final long serialVersionUID = 1L;
-
-		private String title;
-		private String speechNote;
-		private String decisionNote;
-
-		public String getTitle() {
-			return title;
-		}
-
-		public void setTitle(String title) {
-			this.title = title;
-		}
-
-		public String getSpeechNote() {
-			return speechNote;
-		}
-
-		public void setSpeechNote(String speechNote) {
-			this.speechNote = speechNote;
-		}
-
-		public String getDecisionNote() {
-			return decisionNote;
-		}
-
-		public void setDecisionNote(String decisionNote) {
-			this.decisionNote = decisionNote;
-		}
-	}
+	
 
 	// ▼ getter/setter（必要な部分のみ） ▼
 	public Time getStartTime() {
@@ -105,11 +76,11 @@ public class MinutesManagementAndOutputDto implements Serializable {
 		this.participants = participants;
 	}
 
-	public List<AgendaDto> getAgendas() {
+	public  List<model.dto.AgendaDto> getAgendas() {
 		return agendas;
 	}
 
-	public void setAgendas(List<AgendaDto> agendas) {
+	public void setAgendas( List<model.dto.AgendaDto> agendas) {
 		this.agendas = agendas;
 	}
 
@@ -141,9 +112,9 @@ public class MinutesManagementAndOutputDto implements Serializable {
 		// 議題を2つずつ処理
 		    for (int i = 0; i < agendas.size(); i += 2) {
 		        // 左の議題
-		        AgendaDto left = agendas.get(i);
+		    	model.dto.AgendaDto left = agendas.get(i);
 		        // 右の議題（ある場合）
-		        AgendaDto right = (i + 1 < agendas.size()) ? agendas.get(i + 1) : null;
+		    	model.dto.AgendaDto right = (i + 1 < agendas.size()) ? agendas.get(i + 1) : null;
 
 		        // 議題タイトル
 		        String leftTitle = "■ 議題：" + nullToEmpty(left.getTitle());

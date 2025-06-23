@@ -8,11 +8,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import model.dto.AgendaDto;
+import model.dto.MeetingDetailsDto;
 import model.dto.MinutesManagementAndOutputDto;
-import model.dto.MinutesManagementAndOutputDto.AgendaDto;
 
 /**
- * 会議情報取得用DAO（検索画面用）
+ * 会議情報取得用DAO（検索・出力画面用）
  */
 public class MinutesManagementOutputDao {
 	private final Connection conn;
@@ -21,6 +22,7 @@ public class MinutesManagementOutputDao {
 		this.conn = conn;
 	}
 
+	// ▼ 検索画面の会議一覧取得 ▼
 	public List<MinutesManagementAndOutputDto> searchMeetings(String name, String date) throws SQLException {
 		List<MinutesManagementAndOutputDto> list = new ArrayList<>();
 
@@ -29,7 +31,6 @@ public class MinutesManagementOutputDao {
 		sql.append("FROM meetings ");
 		sql.append("WHERE is_deleted = 0 ");
 
-		// 可変条件の構築
 		List<Object> params = new ArrayList<>();
 		if (name != null && !name.isEmpty()) {
 			sql.append("AND title LIKE ? ");
@@ -53,24 +54,21 @@ public class MinutesManagementOutputDao {
 					dto.setmeeting_id(rs.getInt("meeting_id"));
 					dto.setTitle(rs.getString("title"));
 					dto.setMeetingDate(rs.getDate("meeting_date"));
-
 					list.add(dto);
 				}
 			}
 		}
-
 		return list;
 	}
 
-	// ▼ 会議詳細データ取得（議事録出力用） ▼
+	// ▼ 議事録テキスト出力用 ▼
 	public MinutesManagementAndOutputDto findMeetingDetailsById(int meetingId) throws SQLException {
 		MinutesManagementAndOutputDto dto = new MinutesManagementAndOutputDto();
 
-		// meetings テーブルから会議情報取得
+		// 会議情報取得
 		String meetingSql = "SELECT title, meeting_date, start_time, end_time, participants_text FROM meetings WHERE meeting_id = ? AND is_deleted = 0";
 		try (PreparedStatement stmt = conn.prepareStatement(meetingSql)) {
 			stmt.setInt(1, meetingId);
-
 			try (ResultSet rs = stmt.executeQuery()) {
 				if (rs.next()) {
 					dto.setmeeting_id(meetingId);
@@ -87,16 +85,15 @@ public class MinutesManagementOutputDao {
 						dto.setParticipants(new ArrayList<>());
 					}
 				} else {
-					return null; // 該当なし
+					return null;
 				}
 			}
 		}
 
-		// agendas テーブルから議題取得
+		// 議題取得
 		String agendaSql = "SELECT title, speech_note, decision_note FROM agendas WHERE meeting_id = ? AND is_deleted = 0 ORDER BY order_number ASC";
 		try (PreparedStatement stmt = conn.prepareStatement(agendaSql)) {
 			stmt.setInt(1, meetingId);
-
 			try (ResultSet rs = stmt.executeQuery()) {
 				List<AgendaDto> agendas = new ArrayList<>();
 				while (rs.next()) {
@@ -112,16 +109,57 @@ public class MinutesManagementOutputDao {
 
 		return dto;
 	}
-	
-	// ▼ ログ書き込み用（MinutesManagementOutputテーブルへの書き込み） ▼
-	public void insertOutputLog(MinutesManagementAndOutputDto dto) throws SQLException {
-	    String sql = "INSERT INTO MinutesManagementOutput (meeting_id, created_by, output_format) VALUES (?, ?, ?)";
-	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-	        ps.setInt(1, dto.getmeeting_id());
-	        ps.setInt(2, dto.getCreatedBy());
-	        ps.setString(3, dto.getOutputFormat());
-	        ps.executeUpdate();
-	    }
+
+	// ▼ PDF出力用 MeetingDetailsDto 取得メソッド ▼
+	public MeetingDetailsDto findMeetingDetailsDtoById(int meetingId) throws SQLException {
+		MeetingDetailsDto dto = new MeetingDetailsDto();
+
+		// 会議情報取得
+		String sql = "SELECT title, meeting_date, start_time, end_time, participants_text FROM meetings WHERE meeting_id = ? AND is_deleted = 0";
+		try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+			stmt.setInt(1, meetingId);
+			try (ResultSet rs = stmt.executeQuery()) {
+				if (rs.next()) {
+					dto.setMeetingId(meetingId);
+					dto.setTitle(rs.getString("title"));
+					dto.setMeetingDate(rs.getDate("meeting_date").toLocalDate());
+					dto.setStartTime(rs.getTime("start_time").toLocalTime());
+					dto.setEndTime(rs.getTime("end_time").toLocalTime());
+					dto.setParticipantsText(rs.getString("participants_text"));
+				} else {
+					return null;
+				}
+			}
+		}
+
+		// 議題取得
+		String agendaSql = "SELECT title, speech_note, decision_note FROM agendas WHERE meeting_id = ? AND is_deleted = 0 ORDER BY order_number ASC";
+		try (PreparedStatement stmt = conn.prepareStatement(agendaSql)) {
+			stmt.setInt(1, meetingId);
+			try (ResultSet rs = stmt.executeQuery()) {
+				List<AgendaDto> agendas = new ArrayList<>();
+				while (rs.next()) {
+					AgendaDto agenda = new AgendaDto();
+					agenda.setTitle(rs.getString("title"));
+					agenda.setSpeechNote(rs.getString("speech_note"));
+					agenda.setDecisionNote(rs.getString("decision_note"));
+					agendas.add(agenda);
+				}
+				dto.setAgendas(agendas);
+			}
+		}
+
+		return dto;
 	}
 
+	// ▼ 出力ログ記録 ▼
+	public void insertOutputLog(MinutesManagementAndOutputDto dto) throws SQLException {
+		String sql = "INSERT INTO MinutesManagementOutput (meeting_id, created_by, output_format) VALUES (?, ?, ?)";
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setInt(1, dto.getmeeting_id());
+			ps.setInt(2, dto.getCreatedBy());
+			ps.setString(3, dto.getOutputFormat());
+			ps.executeUpdate();
+		}
+	}
 }

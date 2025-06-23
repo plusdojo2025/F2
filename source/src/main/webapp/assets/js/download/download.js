@@ -1,38 +1,47 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const searchNameInput = document.getElementById("search-name");
-  const searchDateInput = document.getElementById("search-date");
-  const meetingSelect = document.getElementById("meeting-select");
+document.addEventListener("DOMContentLoaded", function () {
+  DownloadPage.init();
+});
 
-  async function fetchMeetings() {
-	console.log("fetchMeetings が呼ばれました"); 
-    const name = searchNameInput.value;
-    const date = searchDateInput.value;
+const DownloadPage = {
+  init: function () {
+    this.loadMeetingList();
+    this.initFormSubmit();
+  },
 
-    const params = new URLSearchParams();
-    if (name) params.append("name", name);
-    if (date) params.append("date", date);
-
+  // ✅ 会議一覧を取得してセレクトにセット
+  loadMeetingList: async function () {
     try {
-      const response = await fetch(`/F2/download/searchMeetings?${params.toString()}`);
-      if (!response.ok) throw new Error("通信エラー");
-
+      const response = await fetch("/download/meetings"); // ← サーブレットに合わせて調整
       const meetings = await response.json();
 
-      meetingSelect.innerHTML = '<option value="">-- 会議を選択してください --</option>';
+      const select = document.querySelector("#meetingSelect");
+      if (!select) return;
+
+      // セレクトを初期化（※これがないと毎回追加されてしまう）
+      select.innerHTML = '<option value="">-- 会議を選択してください --</option>';
 
       meetings.forEach(meeting => {
         const option = document.createElement("option");
-        option.value = meeting.meetingId;
-        option.textContent = `${meeting.title}（${meeting.meetingDate}）`;
-        meetingSelect.appendChild(option);
+        option.value = meeting.id;
+        option.textContent = meeting.title;
+        select.appendChild(option);
       });
     } catch (error) {
-      console.error("検索に失敗しました", error);
+      console.error("会議一覧の取得に失敗しました:", error);
     }
+  },
+
+  // ✅ 出力時に会議が選択されているかチェック
+  initFormSubmit: function () {
+    const form = document.querySelector("#downloadForm");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+      const selected = document.querySelector("#meetingSelect").value;
+      if (!selected) {
+        e.preventDefault();
+        alert("出力する会議を選択してください。");
+      }
+    });
   }
-
-  searchNameInput.addEventListener("input", fetchMeetings);
-  searchDateInput.addEventListener("input", fetchMeetings);
-
-  fetchMeetings();
-});
+};

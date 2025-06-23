@@ -1,117 +1,118 @@
 package model.service;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import javax.servlet.ServletContext;
+
+import model.dao.MeetingDetailsDao;
 import model.dao.MinutesManagementOutputDao;
+import model.dto.MeetingDetailsDto;
 import model.dto.MinutesManagementAndOutputDto;
+import util.download.PDFDownloader;
+import util.download.TextDownloader;
 
 /**
- * 議事録ダウンロード関連のサービスクラス。
+ * 議事録の出力関連機能を扱うサービスクラス。
+ * PDF・テキスト出力、プレビュー生成、出力ログ保存に対応。
  */
-public class DownloadService extends BaseService {
+public class DownloadService {
 
-	/**
-	 * 会議の検索処理
-	 * 
-	 * @param searchName 会議名（部分一致）
-	 * @param searchDate 会議日付（yyyy-MM-dd）
-	 * @return 該当する会議リスト
-	 */
-	public List<MinutesManagementAndOutputDto> searchMeetings(String searchName, String searchDate) {
-		try (Connection conn = getConnection()) {
-			MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
-			return dao.searchMeetings(searchName, searchDate);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    /**
+     * DB接続を取得する（f2データベース用）
+     */
+    private Connection getConnection() throws SQLException {
+        String url = "jdbc:mysql://localhost:3306/f2"
+                   + "?useSSL=false"
+                   + "&characterEncoding=utf8"
+                   + "&serverTimezone=Asia/Tokyo";
+        String user = "root";
+        String password = "password";
+        return DriverManager.getConnection(url, user, password);
+    }
 
-	/**
-	 * テキスト形式の議事録ファイルを生成し、一時ファイルとして返す。
-	 * 
-	 * @param dto 議事録情報（会議と議題）
-	 * @return 生成された一時ファイル
-	 * @throws IOException ファイル書き込み失敗時
-	 */
-	public File generateMinutesTextFile(MinutesManagementAndOutputDto dto) throws IOException {
-		// 議事録テキストを生成
-		String text = dto.generateMinutesText();
+    /**
+     * プレビュー用に会議情報（議題含む）を取得する。
+     * ログインユーザーIDをDTOにセットして返却する。
+     */
+    public MeetingDetailsDto generatePreviewData(int meetingId, int loginUserId) {
+        try (Connection conn = getConnection()) {
+            MeetingDetailsDao dao = new MeetingDetailsDao();
+            MeetingDetailsDto dto = dao.findMeetingWithAgendas(conn, meetingId);
+            if (dto != null) {
+                dto.setCreatedBy(loginUserId);
+            }
+            return dto;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-		// 日付を文字列に変換
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String meetingDateStr = sdf.format(dto.getMeetingDate());
+    /**
+     * 会議の検索（出力画面の一覧取得用） ※会議IDで重複排除済み
+     */
+    public List<MinutesManagementAndOutputDto> searchMeetings(String searchName, String searchDate) {
+        try (Connection conn = getConnection()) {
+            MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
+            List<MinutesManagementAndOutputDto> rawList = dao.searchMeetings(searchName, searchDate);
 
-		// 会議名・日付からファイル名作成（禁止文字を置換）
-		String safeTitle = dto.getTitle().replaceAll("[\\\\/:*?\"<>|]", "_");
-		String safeDate = meetingDateStr.replaceAll("[\\\\/:*?\"<>|]", "_");
+            // 重複排除：meetingId でグルーピングして先頭要素だけを残す
+            Map<Integer, MinutesManagementAndOutputDto> uniqueMap =
+                rawList.stream()
+                       .collect(Collectors.toMap(
+                           MinutesManagementAndOutputDto::getmeeting_id,
+                           dto -> dto,
+                           (existing, replacement) -> existing // 重複は無視して1件にする
+                       ));
 
-		String fileName = safeTitle + " " + safeDate + ".txt";
+            return uniqueMap.values().stream().collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-		// 一時フォルダにファイル作成
-		File tempDir = new File(System.getProperty("java.io.tmpdir"));
-		File tempFile = new File(tempDir, fileName);
+    /**
+     * PDFとして議事録を出力する（フォントパスを外部から渡す）。
+     */
+    public boolean exportToPDF(MeetingDetailsDto meetingDetails, String filePath, ServletContext context) {
+        String fontPath = context.getRealPath("/assets/font/NotoSansJP-Regular.ttf");
+        boolean success = PDFDownloader.download(meetingDetails, filePath, fontPath);
+        if (success) {
+            logOutputHistory(meetingDetails.getMeetingId(), meetingDetails.getCreatedBy(), "pdf");
+        }
+        return success;
+    }
 
-		// ファイル書き込み
-		try (FileOutputStream fos = new FileOutputStream(tempFile)) {
-			fos.write(text.getBytes(StandardCharsets.UTF_8));
-		}
+    /**
+     * テキストとして議事録を出力する。
+     */
+    public boolean exportToText(MeetingDetailsDto meetingDetails, String filePath) {
+        boolean success = TextDownloader.download(meetingDetails, filePath);
+        if (success) {
+            logOutputHistory(meetingDetails.getMeetingId(), meetingDetails.getCreatedBy(), "text");
+        }
+        return success;
+    }
 
-		return tempFile;
-	}
-
-	public MinutesManagementAndOutputDto getMeetingDetails(int meetingId) throws SQLException {
-		try (Connection conn = getConnection()) {
-			MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
-			return dao.findMeetingDetailsById(meetingId);
-		} catch (Exception e) { 
-			e.printStackTrace();
-			return null;
-		}
-	}
-	
-	/**
-	 * テキストファイルを生成し、DBに出力ログを記録する
-	 */
-	public File generateTextAndLog(MinutesManagementAndOutputDto dto) throws Exception {
-	    File file = generateMinutesTextFile(dto); // ファイル出力処理
-
-	    try (Connection conn = getConnection()) {
-	        MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
-	        dao.insertOutputLog(conn, dto); // ログをDBに記録
-	    }
-
-	    return file;
-	}
-
-
-	/**
-	 * プレビュー表示用の議事録テキストを取得
-	 * @param meetingId 対象会議ID
-	 * @param format 出力形式（"text" / "pdf"）
-	 * @return 議事録テキスト（今はtextのみ対応）
-	 */
-	public String getMinutesPreviewText(int meetingId, String format) throws SQLException, IOException {
-		MinutesManagementAndOutputDto dto = getMeetingDetails(meetingId);
-		if (dto == null) {
-			return null;
-		}
-
-		if ("text".equals(format)) {
-			return dto.generateMinutesText(); // DTO内で定義されたテキスト生成メソッドを活用
-		} else if ("pdf".equals(format)) {
-			// 将来的にPDFの場合のプレビュー取得処理を実装（例：Base64に変換など）
-			throw new UnsupportedOperationException("PDFプレビューは未実装です。");
-		} else {
-			throw new IllegalArgumentException("不正な出力形式です。");
-		}
-	}
-
+    /**
+     * 出力ログをDBに記録する（PDF or Text）
+     */
+    private void logOutputHistory(int meetingId, int userId, String format) {
+        try (Connection conn = getConnection()) {
+            MinutesManagementOutputDao dao = new MinutesManagementOutputDao(conn);
+            MinutesManagementAndOutputDto dto = new MinutesManagementAndOutputDto();
+            dto.setmeeting_id(meetingId);
+            dto.setCreatedBy(userId);
+            dto.setOutputFormat(format);
+            dao.insertOutputLog(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
