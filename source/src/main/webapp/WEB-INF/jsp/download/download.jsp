@@ -39,15 +39,19 @@
 					<label for="search-name">会議名検索</label> 
 					<div class="search-input-group">
 						<input type="text"
-							id="search-name" name="searchName" placeholder="会議名を入力" />
+							id="search-name" name="searchName" placeholder="会議名を入力" value="${searchName}" />
 						<button type="button" onclick="searchMeetings()" class="search-btn">🔍</button>
 					</div>
 				</div>
 
 				<!-- 日付検索 -->
 				<div class="form-box">
-					<label for="search-date">日付検索</label> <input type="date"
-						id="search-date" name="searchDate" />
+					<label for="search-date">日付検索</label> 
+					<div class="search-input-group">
+						<input type="date"
+							id="search-date" name="searchDate" value="${searchDate}" />
+						<button type="button" onclick="searchMeetings()" class="search-btn">🔍</button>
+					</div>
 				</div>
 
 				<!-- 会議選択 -->
@@ -113,9 +117,13 @@
 	    const searchName = document.getElementById("search-name").value;
 	    const searchDate = document.getElementById("search-date").value;
 	    
+	    console.log("検索実行:", { searchName, searchDate }); // デバッグログ
+	    
 	    const params = new URLSearchParams();
 	    if (searchName) params.append("searchName", searchName);
 	    if (searchDate) params.append("searchDate", searchDate);
+	
+	    console.log("検索URL:", contextPath + "/download?" + params.toString()); // デバッグログ
 	
 	    // 検索リクエストを送信
 	    fetch(contextPath + "/download?" + params.toString())
@@ -139,6 +147,11 @@
 	      event.preventDefault();
 	      searchMeetings();
 	    }
+	  });
+
+	  // 日付変更時に自動検索
+	  document.getElementById("search-date").addEventListener("change", function() {
+	    searchMeetings();
 	  });
 	</script>
 

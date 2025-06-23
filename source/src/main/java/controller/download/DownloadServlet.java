@@ -47,6 +47,10 @@ public class DownloadServlet extends HttpServlet {
 
         List<MinutesManagementAndOutputDto> meetingList = downloadService.searchMeetings(name, date);
         request.setAttribute("meetingList", meetingList);
+        
+        // 検索条件をJSPに渡す
+        request.setAttribute("searchName", name);
+        request.setAttribute("searchDate", date);
 
         request.getRequestDispatcher("/WEB-INF/jsp/download/download.jsp").forward(request, response);
     }
