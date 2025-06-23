@@ -314,25 +314,29 @@ const MeetingList = {
         // 削除（動的対応）
         document.addEventListener('click', function (e) {
             if (e.target && e.target.classList.contains('delete-agenda-button')) {
-                const agendaBlock = e.target.closest('.agenda-block');
-                if (agendaBlock) {
-                    agendaBlock.remove();
-                    
-                    // インデックスを再設定
-                    const agendaContainer = document.getElementById('agenda-container');
-                    if (agendaContainer) {
-                        const agendaBlocks = agendaContainer.querySelectorAll('.agenda-block');
-                        agendaBlocks.forEach((block, index) => {
-                            block.querySelectorAll('[name*="agendas["]').forEach(element => {
-                                const currentName = element.name;
-                                const newName = currentName.replace(/agendas\[\d+\]/, `agendas[${index}]`);
-                                element.name = newName;
-                            });
-                        });
+                if (confirm('この議題を削除しますか？')) {
+                    const agendaBlock = e.target.closest('.agenda-block');
+                    if (agendaBlock) {
+                        agendaBlock.remove();
+                        // 削除後にインデックスを再採番
+                        reindexAgendas();
                     }
                 }
             }
         });
+
+        function reindexAgendas() {
+            const agendaContainer = document.getElementById('agenda-container');
+            if (!agendaContainer) return;
+
+            const agendaBlocks = agendaContainer.querySelectorAll('.agenda-block');
+            agendaBlocks.forEach((block, index) => {
+                // name属性を更新: agendas[5] -> agendas[2]
+                block.querySelectorAll('[name*="agendas["]').forEach(input => {
+                    input.name = input.name.replace(/agendas\[\d+\]/, `agendas[${index}]`);
+                });
+            });
+        }
 
         // data-confirm属性の処理
         document.addEventListener('click', function (e) {

@@ -35,8 +35,8 @@ public class LoginServlet extends HttpServlet{
 		
 		if (user != null) {
 			request.getSession().setAttribute("loginUser",user);
-			// 会議一覧ページにリダイレクト
-			response.sendRedirect(request.getContextPath() + "/meeting/list");
+			// ダッシュボードページにリダイレクト
+			response.sendRedirect(request.getContextPath() + "/dashboard");
 		} else {
 			request.setAttribute("errorMessage", "メールアドレスまたはパスワードが違います。");
 			request.getRequestDispatcher("/WEB-INF/jsp/user/login.jsp").forward(request,response);

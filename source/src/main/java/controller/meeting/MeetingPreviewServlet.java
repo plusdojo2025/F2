@@ -109,7 +109,18 @@ public class MeetingPreviewServlet extends HttpServlet {
 
             List<AgendaDto> agendas = new ArrayList<>();
             int i = 0;
-            while (request.getParameter("agendas[" + i + "].title") != null) {
+            while (true) {
+                String agendaTitle = request.getParameter("agendas[" + i + "].title");
+                
+                if (agendaTitle == null) {
+                    break;
+                }
+                
+                if (agendaTitle.trim().isEmpty()) {
+                    i++;
+                    continue;
+                }
+
                 AgendaDto agenda = new AgendaDto();
                 agenda.setMeetingId(meetingId);
 
@@ -118,10 +129,10 @@ public class MeetingPreviewServlet extends HttpServlet {
                     agenda.setAgendaId(Integer.parseInt(agendaIdStr));
                 }
 
-                agenda.setTitle(request.getParameter("agendas[" + i + "].title"));
+                agenda.setTitle(agendaTitle);
                 agenda.setSpeechNote(request.getParameter("agendas[" + i + "].speechNote"));
                 agenda.setDecisionNote(request.getParameter("agendas[" + i + "].decisionNote"));
-                agenda.setOrderNumber(i + 1);
+                agenda.setOrderNumber(agendas.size() + 1); // 連続した順序番号を設定
                 agendas.add(agenda);
                 i++;
             }
