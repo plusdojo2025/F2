@@ -114,14 +114,14 @@ public class MinutesManagementOutputDao {
 	}
 	
 	// ▼ ログ書き込み用（MinutesManagementOutputテーブルへの書き込み） ▼
-		public void insertOutputLog(MinutesManagementAndOutputDto dto) throws SQLException {
-		    String sql = "INSERT INTO MinutesManagementOutput (meeting_id, created_by, output_format) VALUES (?, ?, ?)";
-		    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-		        ps.setInt(1, dto.getmeeting_id());
-		        ps.setInt(2, dto.getCreatedBy());
-		        ps.setString(3, dto.getOutputFormat());
-		        ps.executeUpdate();
-		    }
-		}
-
+	public void insertOutputLog(MinutesManagementAndOutputDto dto) throws SQLException {
+	    String sql = "INSERT INTO MinutesManagementOutput (meeting_id, created_by, output_format) VALUES (?, ?, ?)";
+	    try (PreparedStatement ps = conn.prepareStatement(sql)) {
+	        ps.setInt(1, dto.getmeeting_id());
+	        ps.setInt(2, dto.getCreatedBy());
+	        ps.setString(3, dto.getOutputFormat());
+	        ps.executeUpdate();
+	    }
 	}
+
+}
