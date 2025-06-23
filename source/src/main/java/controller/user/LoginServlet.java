@@ -12,7 +12,7 @@ import model.dto.UserDto;
 import model.service.UserService;
 
 
-@WebServlet("/login")
+@WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet{
 	
 	@Override
