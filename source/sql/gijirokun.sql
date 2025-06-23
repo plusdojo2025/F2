@@ -17,7 +17,7 @@ INSERT INTO users (username, email, password_hash)
 VALUES (
   'dojouser1',
   'dojouser1@plusdojo.jp',
-  '15d2305a4566c8f987df4060ad3bb8703f9dd56b389c62f37b6ef3446e83e3a3'
+  '40f2d20f80eeb798c36839d98dda52f7ca07f1b151c83c17f4b02fd4336cbbcc'
 );
 -- 会議テーブル
 CREATE TABLE meetings (
