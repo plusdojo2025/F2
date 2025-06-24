@@ -1,10 +1,6 @@
 package controller.user;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -59,13 +55,9 @@ public class MailConfirmServlet extends HttpServlet {
 		session.setAttribute("verificationCode", verificationCode);
 		session.setAttribute("email", email);
 		
-		// ログファイルに認証コードを記録
-		String logMessage = logVerificationCode(email, verificationCode);
-		
 		request.setAttribute("successMessage", "認証コードを送信しました。");
 		request.setAttribute("email", email);
 		request.setAttribute("verificationCode", verificationCode); // ユーザーに表示
-		request.setAttribute("logInfo", logMessage);
 		request.getRequestDispatcher("/WEB-INF/jsp/user/mailConfirm.jsp").forward(request, response);
 	}
 	
@@ -97,26 +89,6 @@ public class MailConfirmServlet extends HttpServlet {
 			request.setAttribute("errorMessage", "認証コードが正しくありません。");
 			request.setAttribute("email", email);
 			request.getRequestDispatcher("/WEB-INF/jsp/user/mailConfirm.jsp").forward(request, response);
-		}
-	}
-	
-	private String logVerificationCode(String email, String code) {
-		try {
-			// ログファイルのパス（Webアプリケーションのルートディレクトリに作成）
-			String logPath = getServletContext().getRealPath("/") + "verification_codes.log";
-			
-			LocalDateTime now = LocalDateTime.now();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-			String timestamp = now.format(formatter);
-			
-			// ログファイルに記録
-			try (PrintWriter writer = new PrintWriter(new FileWriter(logPath, true))) {
-				writer.println("[" + timestamp + "] Email: " + email + " | Code: " + code);
-			}
-			
-			return "認証コードはログファイルに記録されました: " + logPath;
-		} catch (Exception e) {
-			return "ログファイルの作成に失敗しました: " + e.getMessage();
 		}
 	}
 }
