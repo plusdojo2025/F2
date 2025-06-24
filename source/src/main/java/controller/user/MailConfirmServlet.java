@@ -1,7 +1,10 @@
 package controller.user;
 
+import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Random;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -48,22 +51,21 @@ public class MailConfirmServlet extends HttpServlet {
 			return;
 		}
 		
-		// ダミーの認証コード生成（6桁の数字）
-		String verificationCode = generateVerificationCode();
+		// 固定の認証コード（開発・テスト用）
+		String verificationCode = "135790";
 		
 		// セッションに認証コードを保存
 		HttpSession session = request.getSession();
 		session.setAttribute("verificationCode", verificationCode);
 		session.setAttribute("email", email);
 		
-		// ダミーのメール送信処理（実際には送信しない）
-		System.out.println("=== メール認証コード送信（ダミー） ===");
-		System.out.println("送信先: " + email);
-		System.out.println("認証コード: " + verificationCode);
-		System.out.println("================================");
+		// ログファイルに認証コードを記録
+		String logMessage = logVerificationCode(email, verificationCode);
 		
 		request.setAttribute("successMessage", "認証コードを送信しました。");
 		request.setAttribute("email", email);
+		request.setAttribute("verificationCode", verificationCode); // ユーザーに表示
+		request.setAttribute("logInfo", logMessage);
 		request.getRequestDispatcher("/WEB-INF/jsp/user/mailConfirm.jsp").forward(request, response);
 	}
 	
@@ -98,9 +100,23 @@ public class MailConfirmServlet extends HttpServlet {
 		}
 	}
 	
-	private String generateVerificationCode() {
-		Random random = new Random();
-		int code = random.nextInt(900000) + 100000; // 100000-999999の6桁
-		return String.valueOf(code);
+	private String logVerificationCode(String email, String code) {
+		try {
+			// ログファイルのパス（Webアプリケーションのルートディレクトリに作成）
+			String logPath = getServletContext().getRealPath("/") + "verification_codes.log";
+			
+			LocalDateTime now = LocalDateTime.now();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			String timestamp = now.format(formatter);
+			
+			// ログファイルに記録
+			try (PrintWriter writer = new PrintWriter(new FileWriter(logPath, true))) {
+				writer.println("[" + timestamp + "] Email: " + email + " | Code: " + code);
+			}
+			
+			return "認証コードはログファイルに記録されました: " + logPath;
+		} catch (Exception e) {
+			return "ログファイルの作成に失敗しました: " + e.getMessage();
+		}
 	}
 }

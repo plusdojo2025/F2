@@ -148,6 +148,12 @@
     <c:if test="${not empty successMessage}">
         <div style="color:green; text-align:center; margin-bottom:10px;">${successMessage}</div>
     </c:if>
+    <!-- 認証コード表示（シンプル表示） -->
+    <c:if test="${not empty verificationCode}">
+        <div style="background:#e8f5e8; border:2px solid #28a745; border-radius:8px; padding:15px; margin-bottom:15px; text-align:center;">
+            <strong style="color:#155724; font-size:16px;">認証コード: ${verificationCode}</strong>
+        </div>
+    </c:if>
     <!-- ステップ1: メールアドレス入力 -->
     <c:choose>
       <c:when test="${empty email}">
@@ -171,7 +177,7 @@
                 <input type="hidden" name="action" value="verify-code">
                 <div class="form-group">
                     <label for="verificationCode">認証コード（6桁）</label>
-                    <input type="text" id="verificationCode" name="verificationCode" maxlength="6" pattern="[0-9]{6}" required placeholder="123456" class="form-input">
+                    <input type="text" id="verificationCode" name="verificationCode" maxlength="6" pattern="[0-9]{6}" required placeholder="135790" class="form-input">
                     <small>送信された6桁の数字を入力してください</small>
                 </div>
                 <button type="submit" class="btn-detail">認証コードを確認</button>
@@ -185,38 +191,40 @@
     </c:choose>
   </div>
 </main>
+<!-- スクリプトはbody直前に配置 -->
 <script>
-    // 認証コード送信後にステップ2を表示
-    <c:if test="${not empty email}">
-        document.getElementById('step1-section')?.style.display = 'none';
-        document.getElementById('step2-section')?.style.display = 'block';
-        document.getElementById('step2').classList.add('active');
-    </c:if>
-    // 認証コード再送信
-    function resendCode() {
-        const email = '${email}';
-        if (email) {
-            const form = document.createElement('form');
-            form.method = 'post';
-            form.action = '${pageContext.request.contextPath}/mail-confirm';
-            const actionInput = document.createElement('input');
-            actionInput.type = 'hidden';
-            actionInput.name = 'action';
-            actionInput.value = 'send-code';
-            const emailInput = document.createElement('input');
-            emailInput.type = 'hidden';
-            emailInput.name = 'email';
-            emailInput.value = email;
-            form.appendChild(actionInput);
-            form.appendChild(emailInput);
-            document.body.appendChild(form);
-            form.submit();
-        }
+function resendCode() {
+    var email = document.getElementsByName('email')[0]?.value || '${email}';
+    if (email) {
+        var form = document.createElement('form');
+        form.method = 'post';
+        form.action = '${pageContext.request.contextPath}/mail-confirm';
+        var actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'send-code';
+        var emailInput = document.createElement('input');
+        emailInput.type = 'hidden';
+        emailInput.name = 'email';
+        emailInput.value = email;
+        form.appendChild(actionInput);
+        form.appendChild(emailInput);
+        document.body.appendChild(form);
+        form.submit();
     }
-    // 認証コード入力フィールドの制限
-    document.getElementById('verificationCode')?.addEventListener('input', function(e) {
+}
+// 認証コード送信後にステップ2を表示
+<c:if test="${not empty email}">
+    document.getElementById('step1-section')?.style.display = 'none';
+    document.getElementById('step2-section')?.style.display = 'block';
+    document.getElementById('step2').classList.add('active');
+</c:if>
+// 認証コード入力フィールドの制限
+if(document.getElementById('verificationCode')) {
+    document.getElementById('verificationCode').addEventListener('input', function(e) {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
+}
 </script>
 </body>
 </html>
