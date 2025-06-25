@@ -28,12 +28,6 @@
 		    ${errorMessage}
 		  </div>
 		</c:if>
-		<!-- 登録完了メッセージ表示（login.jspで受け取る想定） -->
-		<c:if test="${param.registered eq 'true'}">
-		  <div style="color:green; text-align:center; margin-bottom:10px;">
-		    登録が完了しました。ログインしてください。
-		  </div>
-		</c:if>
 
 <!-- 登録フォーム -->
 <form class = "form-block" id = "register_form" method="POST" action="<%= request.getContextPath() %>/register">

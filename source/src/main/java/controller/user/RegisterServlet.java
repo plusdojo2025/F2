@@ -50,7 +50,7 @@ public class RegisterServlet extends HttpServlet {
 		try {
 			UserService service = new UserService();
 			service.register(dto);
-			response.sendRedirect(request.getContextPath() + "/login");
+			response.sendRedirect(request.getContextPath() + "/login?registered=true");
 		} catch (Exception e) {
 			request.setAttribute("errorMessage","登録処理中にエラーが発生しました。"+ e.getMessage());
 			request.getRequestDispatcher("/WEB-INF/jsp/user/register.jsp").forward(request, response);
