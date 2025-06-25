@@ -6,25 +6,25 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controller.AuthenticatedServlet;
 import model.dao.AgendaDao;
 import model.dao.MeetingDao;
 import model.dto.AgendaDto;
 import model.dto.MeetingDto;
 
 @WebServlet("/meeting/detail")
-public class MeetingDetailServlet extends HttpServlet {
+public class MeetingDetailServlet extends AuthenticatedServlet {
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        String idStr = request.getParameter("id");
-        String format = request.getParameter("format");
+        String idStr = req.getParameter("id");
+        String format = req.getParameter("format");
         
         if (idStr == null) {
-            response.sendRedirect(request.getContextPath() + "/meeting/list");
+            resp.sendRedirect(req.getContextPath() + "/meeting/list");
             return;
         }
 
@@ -42,19 +42,19 @@ public class MeetingDetailServlet extends HttpServlet {
 
         if (meeting == null) {
             if ("json".equals(format)) {
-                response.setContentType("application/json");
-                response.getWriter().write("{\"error\": \"会議が見つかりませんでした。\"}");
+                resp.setContentType("application/json");
+                resp.getWriter().write("{\"error\": \"会議が見つかりませんでした。\"}");
             } else {
-                response.setContentType("text/html");
-                response.getWriter().write("<div class=\"error-message\">会議が見つかりませんでした。</div>");
+                resp.setContentType("text/html");
+                resp.getWriter().write("<div class=\"error-message\">会議が見つかりませんでした。</div>");
             }
             return;
         }
 
         if ("json".equals(format)) {
             // 簡易詳細モーダル用のJSONデータ
-            response.setContentType("application/json");
-            response.setCharacterEncoding("UTF-8");
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
             StringBuilder json = new StringBuilder();
             json.append("{");
             json.append("\"meetingId\":").append(meeting.getMeetingId()).append(",");
@@ -87,13 +87,13 @@ public class MeetingDetailServlet extends HttpServlet {
             }
             json.append("]");
             json.append("}");
-            response.getWriter().write(json.toString());
+            resp.getWriter().write(json.toString());
         } else {
             // 詳細モーダル用のHTMLデータ
-            response.setContentType("text/html");
-            request.setAttribute("meeting", meeting);
-            request.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingDetailContent.jsp")
-                  .forward(request, response);
+            resp.setContentType("text/html");
+            req.setAttribute("meeting", meeting);
+            req.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingDetailContent.jsp")
+                  .forward(req, resp);
         }
     }
 

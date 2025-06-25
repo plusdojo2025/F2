@@ -6,44 +6,39 @@ import java.sql.Time;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import controller.AuthenticatedServlet;
 import model.dto.MeetingDto;
 import model.dto.UserDto;
 import model.service.MeetingService;
 
 @WebServlet("/meeting/create")
-public class MeetingCreateServlet extends HttpServlet {
+public class MeetingCreateServlet extends AuthenticatedServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        System.out.println("=== [GET] /meeting/create に到達 ===");
-        request.setAttribute("meeting", null);
-        request.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(request, response);
+        req.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
+        req.setCharacterEncoding("UTF-8");
+        HttpSession session = req.getSession(false);
+        UserDto loginUser = (UserDto) session.getAttribute("loginUser");
+
         System.out.println("=== [POST] 会議作成処理 開始 ===");
 
         try {
-            HttpSession session = request.getSession(false);
-            UserDto loginUser = (session != null) ? (UserDto) session.getAttribute("loginUser") : null;
-            if (loginUser == null) {
-                throw new IllegalStateException("ログインユーザーが見つかりません。");
-            }
-
-            String title = request.getParameter("title");
-            String dateStr = request.getParameter("date");
-            String timeInput = request.getParameter("time");
-            String participants = request.getParameter("participants");
-            String action = request.getParameter("action");
+            String title = req.getParameter("title");
+            String dateStr = req.getParameter("date");
+            String timeInput = req.getParameter("time");
+            String participants = req.getParameter("participants");
+            String action = req.getParameter("action");
 
             System.out.println("[DEBUG] title = " + title);
             System.out.println("[DEBUG] date = " + dateStr);
@@ -94,9 +89,9 @@ public class MeetingCreateServlet extends HttpServlet {
             System.out.println("[INFO] 会議作成成功: meetingId = " + meetingId);
 
             if ("create".equals(action)) {
-                response.sendRedirect(request.getContextPath() + "/meeting/list");
+                resp.sendRedirect(req.getContextPath() + "/meeting/list");
             } else if ("next".equals(action)) {
-                response.sendRedirect(request.getContextPath() + "/speech/register?meetingId=" + meetingId);
+                resp.sendRedirect(req.getContextPath() + "/speech/register?meetingId=" + meetingId);
             } else {
                 throw new IllegalArgumentException("不正なアクションです: " + action);
             }
@@ -104,8 +99,8 @@ public class MeetingCreateServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("[ERROR] 登録エラー: " + e.getMessage());
-            request.setAttribute("error", "会議の登録中にエラーが発生しました: " + e.getMessage());
-            request.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(request, response);
+            req.setAttribute("error", "会議の登録中にエラーが発生しました: " + e.getMessage());
+            req.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(req, resp);
         }
     }
 

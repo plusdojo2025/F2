@@ -6,10 +6,10 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controller.AuthenticatedServlet;
 import model.dto.AgendaDto;
 import model.dto.MeetingDto;
 import model.service.MeetingService;
@@ -19,7 +19,7 @@ import model.service.MeetingService;
  * 入力値を取得して MeetingService に委譲し、プレビュー画面へ遷移する
  */
 @WebServlet("/speech/register")
-public class SpeechRegisterServlet extends HttpServlet {
+public class SpeechRegisterServlet extends AuthenticatedServlet {
 	private static final long serialVersionUID = 1L;
 
 	private final MeetingService meetingService = new MeetingService();

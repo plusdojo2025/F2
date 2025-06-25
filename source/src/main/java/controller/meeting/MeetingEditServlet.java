@@ -9,36 +9,36 @@ import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import controller.AuthenticatedServlet;
 import model.dto.AgendaDto;
 import model.dto.MeetingDto;
 import model.service.MeetingService;
 
 @WebServlet("/meeting/edit")
-public class MeetingEditServlet extends HttpServlet {
+public class MeetingEditServlet extends AuthenticatedServlet {
 
     private final MeetingService meetingService = new MeetingService();
 
     // 編集フォーム表示
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        HttpSession session = request.getSession();
+        req.setCharacterEncoding("UTF-8");
+        HttpSession session = req.getSession();
 
         try {
-            String idStr = request.getParameter("id");
+            String idStr = req.getParameter("id");
             if (idStr == null) {
                 // 新規作成の場合もトークンを生成
                 String token = UUID.randomUUID().toString();
                 session.setAttribute("csrfToken", token);
-                request.setAttribute("csrfToken", token);
+                req.setAttribute("csrfToken", token);
                 
-                request.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(request, response);
+                req.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(req, resp);
                 return;
             }
 
@@ -46,48 +46,48 @@ public class MeetingEditServlet extends HttpServlet {
             MeetingDto meeting = meetingService.findMeetingById(meetingId);
 
             if (meeting == null) {
-                request.setAttribute("error", "会議が見つかりませんでした。");
+                req.setAttribute("error", "会議が見つかりませんでした。");
             } else {
-                request.setAttribute("meeting", meeting);
-                request.setAttribute("agendas", meetingService.findAgendasByMeetingId(meetingId));
+                req.setAttribute("meeting", meeting);
+                req.setAttribute("agendas", meetingService.findAgendasByMeetingId(meetingId));
                 
                 // 編集時にもトークンを生成
                 String token = UUID.randomUUID().toString();
                 session.setAttribute("csrfToken", token);
-                request.setAttribute("csrfToken", token);
+                req.setAttribute("csrfToken", token);
             }
 
-            request.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(request, response);
+            req.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(req, resp);
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "データ取得に失敗しました。");
-            request.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(request, response);
+            req.setAttribute("error", "データ取得に失敗しました。");
+            req.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingForm.jsp").forward(req, resp);
         }
     }
 
     // 会議＋議題の更新処理
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        HttpSession session = request.getSession(false);
+        req.setCharacterEncoding("UTF-8");
+        HttpSession session = req.getSession(false);
 
         // トークンチェック
         String sessionToken = (session != null) ? (String) session.getAttribute("csrfToken") : null;
-        String requestToken = request.getParameter("csrfToken");
+        String requestToken = req.getParameter("csrfToken");
 
         if (sessionToken == null || !sessionToken.equals(requestToken)) {
-            request.setAttribute("error", "不正なリクエストです。");
+            req.setAttribute("error", "不正なリクエストです。");
             // 404エラーを避けるため、会議一覧にリダイレクト
-            response.sendRedirect(request.getContextPath() + "/meeting/list?error=invalid_request");
+            resp.sendRedirect(req.getContextPath() + "/meeting/list?error=invalid_request");
             return;
         }
         // 使用済みトークンを無効化
         session.removeAttribute("csrfToken");
 
         try {
-            String meetingIdStr = request.getParameter("meetingId");
+            String meetingIdStr = req.getParameter("meetingId");
             boolean isCreate = (meetingIdStr == null || meetingIdStr.isEmpty());
             
             MeetingDto meeting = new MeetingDto();
@@ -95,11 +95,11 @@ public class MeetingEditServlet extends HttpServlet {
 
             if (isCreate) {
                 // 会議作成の場合
-                String title = request.getParameter("title");
-                String dateStr = request.getParameter("date");
-                String timeInput = request.getParameter("time");
-                String participants = request.getParameter("participants");
-                String action = request.getParameter("action");
+                String title = req.getParameter("title");
+                String dateStr = req.getParameter("date");
+                String timeInput = req.getParameter("time");
+                String participants = req.getParameter("participants");
+                String action = req.getParameter("action");
 
                 if (title == null || title.isEmpty() ||
                     dateStr == null || dateStr.isEmpty() ||
@@ -144,7 +144,7 @@ public class MeetingEditServlet extends HttpServlet {
                 // 議題データを処理
                 int i = 0;
                 while (true) {
-                    String agendaTitle = request.getParameter("agendas[" + i + "].title");
+                    String agendaTitle = req.getParameter("agendas[" + i + "].title");
 
                     if (agendaTitle == null) {
                         break;
@@ -158,14 +158,14 @@ public class MeetingEditServlet extends HttpServlet {
                     AgendaDto agenda = new AgendaDto();
                     agenda.setMeetingId(newMeetingId);
 
-                    String agendaIdStr = request.getParameter("agendas[" + i + "].agendaId");
+                    String agendaIdStr = req.getParameter("agendas[" + i + "].agendaId");
                     if (agendaIdStr != null && !agendaIdStr.isEmpty()) {
                         agenda.setAgendaId(Integer.parseInt(agendaIdStr));
                     }
 
                     agenda.setTitle(agendaTitle);
-                    agenda.setSpeechNote(request.getParameter("agendas[" + i + "].speechNote"));
-                    agenda.setDecisionNote(request.getParameter("agendas[" + i + "].decisionNote"));
+                    agenda.setSpeechNote(req.getParameter("agendas[" + i + "].speechNote"));
+                    agenda.setDecisionNote(req.getParameter("agendas[" + i + "].decisionNote"));
                     agenda.setOrderNumber(agendas.size() + 1);
                     agendas.add(agenda);
                     i++;
@@ -176,11 +176,11 @@ public class MeetingEditServlet extends HttpServlet {
                 }
 
                 if ("create".equals(action)) {
-                    response.sendRedirect(request.getContextPath() + "/meeting/list");
+                    resp.sendRedirect(req.getContextPath() + "/meeting/list");
                 } else if ("next".equals(action)) {
-                    response.sendRedirect(request.getContextPath() + "/speech/register?meetingId=" + newMeetingId);
+                    resp.sendRedirect(req.getContextPath() + "/speech/register?meetingId=" + newMeetingId);
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/meeting/list");
+                    resp.sendRedirect(req.getContextPath() + "/meeting/list");
                 }
 
             } else {
@@ -190,15 +190,15 @@ public class MeetingEditServlet extends HttpServlet {
                 System.out.println("[DEBUG] meetingId = " + meetingId);
 
                 // 時間を整形して変換
-                String startTimeStr = normalizeTime(request.getParameter("startTime"));
-                String endTimeStr = normalizeTime(request.getParameter("endTime"));
+                String startTimeStr = normalizeTime(req.getParameter("startTime"));
+                String endTimeStr = normalizeTime(req.getParameter("endTime"));
 
                 meeting.setMeetingId(meetingId);
-                meeting.setTitle(request.getParameter("title"));
-                meeting.setMeetingDate(Date.valueOf(request.getParameter("date")));
+                meeting.setTitle(req.getParameter("title"));
+                meeting.setMeetingDate(Date.valueOf(req.getParameter("date")));
                 meeting.setStartTime(Time.valueOf(startTimeStr));
                 meeting.setEndTime(Time.valueOf(endTimeStr));
-                meeting.setParticipantsText(request.getParameter("participants"));
+                meeting.setParticipantsText(req.getParameter("participants"));
                 meeting.setDetailArea("");  // 空文字で初期化
                 meeting.setDecisions("");   // 空文字で初期化
 
@@ -207,7 +207,7 @@ public class MeetingEditServlet extends HttpServlet {
                 // 議題データを処理
                 int i = 0;
                 while (true) {
-                    String agendaTitle = request.getParameter("agendas[" + i + "].title");
+                    String agendaTitle = req.getParameter("agendas[" + i + "].title");
 
                     if (agendaTitle == null) {
                         break;
@@ -221,14 +221,14 @@ public class MeetingEditServlet extends HttpServlet {
                     AgendaDto agenda = new AgendaDto();
                     agenda.setMeetingId(meetingId);
 
-                    String agendaIdStr = request.getParameter("agendas[" + i + "].agendaId");
+                    String agendaIdStr = req.getParameter("agendas[" + i + "].agendaId");
                     if (agendaIdStr != null && !agendaIdStr.isEmpty()) {
                         agenda.setAgendaId(Integer.parseInt(agendaIdStr));
                     }
 
                     agenda.setTitle(agendaTitle);
-                    agenda.setSpeechNote(request.getParameter("agendas[" + i + "].speechNote"));
-                    agenda.setDecisionNote(request.getParameter("agendas[" + i + "].decisionNote"));
+                    agenda.setSpeechNote(req.getParameter("agendas[" + i + "].speechNote"));
+                    agenda.setDecisionNote(req.getParameter("agendas[" + i + "].decisionNote"));
                     agenda.setOrderNumber(agendas.size() + 1);
                     agendas.add(agenda);
                     i++;
@@ -246,13 +246,13 @@ public class MeetingEditServlet extends HttpServlet {
                 }
                 
                 System.out.println("[INFO] 会議編集成功: meetingId = " + meetingId);
-                response.sendRedirect(request.getContextPath() + "/meeting/list");
+                resp.sendRedirect(req.getContextPath() + "/meeting/list");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "保存に失敗しました: " + e.getMessage());
-            doGet(request, response);
+            req.setAttribute("error", "保存に失敗しました: " + e.getMessage());
+            doGet(req, resp);
         }
     }
 

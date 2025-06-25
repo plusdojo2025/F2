@@ -5,15 +5,15 @@ import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import controller.AuthenticatedServlet;
 import model.dto.MeetingDto;
 import model.service.MeetingService;
 
 @WebServlet("/meeting/list")
-public class MeetingListServlet extends HttpServlet {
+public class MeetingListServlet extends AuthenticatedServlet {
     private MeetingService meetingService;
 
     @Override
@@ -22,19 +22,19 @@ public class MeetingListServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         try {
-            String meetingName = request.getParameter("meetingName");
-            String meetingDate = request.getParameter("meetingDate");
-            String sort = request.getParameter("sort");
+            String meetingName = req.getParameter("meetingName");
+            String meetingDate = req.getParameter("meetingDate");
+            String sort = req.getParameter("sort");
 
             // ページ番号取得
             int page = 1;
             int pageSize = 9;
-            if (request.getParameter("page") != null) {
+            if (req.getParameter("page") != null) {
                 try {
-                    page = Integer.parseInt(request.getParameter("page"));
+                    page = Integer.parseInt(req.getParameter("page"));
                 } catch (NumberFormatException e) {
                     page = 1;
                 }
@@ -50,17 +50,17 @@ public class MeetingListServlet extends HttpServlet {
             List<MeetingDto> meetings = (fromIndex < totalMeetings) ? allMeetings.subList(fromIndex, toIndex) : java.util.Collections.emptyList();
             int totalPages = (int) Math.ceil((double) totalMeetings / pageSize);
 
-            request.setAttribute("meetings", meetings);
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", totalPages);
-            request.setAttribute("meetingName", meetingName);
-            request.setAttribute("meetingDate", meetingDate);
-            request.setAttribute("sort", sort);
+            req.setAttribute("meetings", meetings);
+            req.setAttribute("currentPage", page);
+            req.setAttribute("totalPages", totalPages);
+            req.setAttribute("meetingName", meetingName);
+            req.setAttribute("meetingDate", meetingDate);
+            req.setAttribute("sort", sort);
 
-            request.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingList.jsp").forward(request, response);
+            req.getRequestDispatcher("/WEB-INF/jsp/meeting/meetingList.jsp").forward(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            resp.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }
