@@ -4,19 +4,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import controller.AuthenticatedServlet;
 import model.dto.MeetingDetailsDto;
+import model.dto.MinutesManagementAndOutputDto;
 import model.service.DownloadService;
 
 @WebServlet("/download")
-public class DownloadServlet extends AuthenticatedServlet {
+public class DownloadServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final DownloadService downloadService = new DownloadService();
@@ -24,6 +26,21 @@ public class DownloadServlet extends AuthenticatedServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+        String searchName = req.getParameter("searchName");
+        String searchDate = req.getParameter("searchDate");
+
+        req.setAttribute("searchName", searchName);
+        req.setAttribute("searchDate", searchDate);
+
+        try {
+            List<MinutesManagementAndOutputDto> meetingList =
+                    downloadService.searchMeetings(searchName, searchDate);
+            req.setAttribute("meetingList", meetingList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            req.setAttribute("error", "会議情報の取得中にエラーが発生しました。");
+        }
+
         req.getRequestDispatcher("/WEB-INF/jsp/download/download.jsp").forward(req, resp);
     }
 
