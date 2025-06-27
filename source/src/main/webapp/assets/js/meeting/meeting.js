@@ -120,6 +120,24 @@ const MeetingList = {
                         btn.onclick = function() {
                             this.parentNode.querySelectorAll('.more-speech').forEach(e => e.style.display = 'block');
                             this.style.display = 'none';
+                            
+                            // ボタンを押した後、モーダルのスクロール位置を調整
+                            setTimeout(() => {
+                                const modalBody = document.querySelector('#detailModal .modal-body');
+                                if (modalBody) {
+                                    // 新しく表示された内容の位置までスクロール
+                                    const newContent = this.parentNode.querySelectorAll('.more-speech');
+                                    if (newContent.length > 0) {
+                                        const lastNewContent = newContent[newContent.length - 1];
+                                        const rect = lastNewContent.getBoundingClientRect();
+                                        const modalRect = modalBody.getBoundingClientRect();
+                                        
+                                        if (rect.bottom > modalRect.bottom) {
+                                            modalBody.scrollTop += (rect.bottom - modalRect.bottom) + 20;
+                                        }
+                                    }
+                                }
+                            }, 100);
                         };
                     });
                 } else if (data.detailArea) {
