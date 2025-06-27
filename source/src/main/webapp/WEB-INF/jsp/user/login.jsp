@@ -12,7 +12,12 @@
 </head>
 <body>
 <main class = "main-container">
-		<div class = "glass">
+	<!-- 新しいくま画像とぎじろくんテキストを中央上に表示 -->
+	<div class="login-theme-logo">
+		<img src="<%=request.getContextPath()%>/assets/images/kuma_note.png" alt="ぎじろくんロゴ" class="login-kuma-img">
+		<div class="login-theme-title">ぎじろくん</div>
+	</div>
+	<div class = "glass">
 		<h1 class = "page-title">🔐 ログイン</h1>
 
 		<!-- エラーメッセージ表示 -->
